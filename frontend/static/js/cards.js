@@ -1,5 +1,4 @@
 // frontend/static/js/cards.js – Karten-Templates pro Gerätetyp
-import { isStale } from './utils.js';
 
 export function renderToggle(d) {
   const checked = d.state === 'ON' ? 'checked' : '';
@@ -11,14 +10,7 @@ export function renderToggle(d) {
     </label>`;
 }
 
-export function renderDimmer(d) {
-  const val = d.brightness ?? 50;
-  return `
-    <div class="slider-control">
-      <input type="range" min="0" max="100" value="${val}" data-action="brightness" data-id="${d.id}">
-      <div class="slider-label"><span>Helligkeit</span><span>${val}%</span></div>
-    </div>`;
-}
+export { renderLight as renderDimmer } from './light-card.js';
 
 export function renderRoller(d) {
   const val = d.position ?? 100;
@@ -54,11 +46,4 @@ export function renderRoller(d) {
 
 export { renderThermostat } from './thermo.js';
 
-export function renderSensor(d) {
-  const temp = d.temperature ?? '–';
-  const unit = d.unit || '°C';
-  const stale = isStale(d.last_seen);
-  const style = stale ? 'opacity:.4' : '';
-  const hint = stale ? ' (veraltet)' : '';
-  return `<div class="device-status" style="font-size:1.4rem;font-weight:700;color:var(--accent);${style}">${temp}${unit}${hint}</div>`;
-}
+export { renderSensor } from './sensor-gauge.js';

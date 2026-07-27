@@ -1,0 +1,103 @@
+/* sensor.css – Gauge + Counter Display */
+
+.sensor-gauge {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 0;
+}
+
+.gauge-ring {
+    width: 110px;
+    height: 110px;
+}
+
+.gauge-value {
+    position: absolute;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* Counter Display (Wasseruhr/Gaszähler) */
+.counter-display {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    gap: 6px;
+}
+
+.counter-digits {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+}
+
+.counter-digit {
+    font-family: 'SF Mono', 'Courier New', monospace;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 6px;
+    min-width: 24px;
+    text-align: center;
+}
+
+.counter-decimal {
+    color: var(--red);
+    border-color: rgba(239, 68, 48, .3);
+}
+
+.counter-sep {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    padding: 0 2px;
+}
+
+.counter-unit {
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+/* Status Dot */
+.status-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-dot.live {
+    background: var(--green);
+}
+
+.status-dot.stale {
+    background: var(--text-muted);
+    animation: blink-dot 1.5s infinite;
+}
+
+@keyframes blink-dot {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .3;
+    }
+}

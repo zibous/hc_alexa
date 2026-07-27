@@ -1,0 +1,62 @@
+/* light.css – Apple-Style Licht-Steuerung */
+
+.light-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    gap: 10px;
+    transition: all .3s;
+}
+
+.light-bulb {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all .3s;
+}
+
+.light-on .light-bulb {
+    background: rgba(251, 191, 36, .1);
+    border-color: rgba(251, 191, 36, .4);
+    box-shadow: 0 0 24px rgba(251, 191, 36, .2), 0 0 48px rgba(251, 191, 36, .1);
+}
+
+.light-bulb:hover {
+    transform: scale(1.05);
+}
+
+.light-bulb:active {
+    transform: scale(.95);
+}
+
+.light-info {
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.light-on .light-info {
+    color: #fbbf24;
+}
+
+.light-pct {
+    font-size: 1rem;
+}
+
+.light-slider {
+    width: 80%;
+    accent-color: #fbbf24;
+    opacity: .6;
+    transition: opacity .2s;
+}
+
+.light-slider:hover {
+    opacity: 1;
+}

@@ -1,0 +1,60 @@
+/* switch.css – Apple-Style Power Switch */
+
+.switch-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+    gap: 10px;
+}
+
+.switch-btn {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all .25s;
+}
+
+.switch-btn svg {
+    width: 32px;
+    height: 32px;
+    color: var(--text-muted);
+    transition: color .25s;
+}
+
+.switch-btn:hover {
+    transform: scale(1.05);
+    border-color: var(--text-muted);
+}
+
+.switch-btn:active {
+    transform: scale(.93);
+}
+
+/* Aktiv-Zustand */
+.switch-on .switch-btn {
+    border-color: var(--green);
+    background: rgba(16, 185, 129, .1);
+    box-shadow: 0 0 20px rgba(16, 185, 129, .25), 0 0 40px rgba(16, 185, 129, .1);
+}
+
+.switch-on .switch-btn svg {
+    color: var(--green);
+}
+
+.switch-label {
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: color .25s;
+}
+
+.switch-on .switch-label {
+    color: var(--green);
+}

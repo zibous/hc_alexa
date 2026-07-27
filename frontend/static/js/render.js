@@ -1,7 +1,9 @@
 // frontend/static/js/render.js – Orchestrierung & Event-Binding
-import { renderDimmer, renderRoller, renderSensor, renderThermostat, renderToggle } from './cards.js';
+import { renderDimmer, renderRoller, renderSensor, renderThermostat } from './cards.js';
 import { icons } from './icons.js';
+import { initLightEvents } from './light-card.js';
 import { initRollerDrag } from './roller-drag.js';
+import { initSwitchEvents, renderSwitch } from './switch-card.js';
 import { initThermostatEvents } from './thermo.js';
 
 let _actionHandler = null;
@@ -40,6 +42,8 @@ export function renderDevices(devices, actionHandler) {
   bindEvents();
   initRollerDrag(actionHandler);
   initThermostatEvents(actionHandler);
+  initLightEvents(actionHandler);
+  initSwitchEvents(actionHandler);
 }
 
 function renderCard(d) {
@@ -53,7 +57,7 @@ function renderCard(d) {
           <div class="device-name">${icon} ${d.name}</div>
           <div class="device-type">${d.id}</div>
         </div>
-        ${d.type === 'switch' || d.type === 'dimmer' || d.type === 'light' ? renderToggle(d) : ''}
+        ${'' /* Toggle entfernt – Switches nutzen jetzt den Power-Button */}
       </div>
       ${control}
       <div class="device-status">${d.status || ''}</div>
@@ -67,6 +71,7 @@ function renderControl(d) {
     case 'roller': return renderRoller(d);
     case 'thermostat': return renderThermostat(d);
     case 'sensor': return renderSensor(d);
+    case 'switch': return renderSwitch(d);
     default: return '';
   }
 }
