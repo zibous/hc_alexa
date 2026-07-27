@@ -1,0 +1,67 @@
+/* cards.css – Device Grid, Cards, Gruppen */
+
+.device-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.group-title {
+    font-size: .8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    padding-left: 2px;
+}
+
+.device-grid-inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.device-card {
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: border-color .2s;
+}
+
+.device-card:hover {
+    border-color: var(--accent);
+}
+
+.device-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.device-name {
+    font-size: .95rem;
+    font-weight: 600;
+}
+
+.device-type {
+    font-size: .7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.device-status {
+    font-size: .8rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+@media (max-width: 480px) {
+    .device-grid-inner {
+        grid-template-columns: 1fr;
+    }
+}

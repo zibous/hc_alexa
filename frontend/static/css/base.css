@@ -1,0 +1,57 @@
+/* base.css – Reset, Layout, Header, Footer */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.header-status {
+    font-size: .75rem;
+    color: var(--text-muted);
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: .75rem;
+    color: var(--text-muted);
+}
+
+footer .sep {
+    margin: 0 8px;
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.2rem;
+    }
+}

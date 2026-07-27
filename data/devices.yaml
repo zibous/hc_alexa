@@ -1,0 +1,467 @@
+# devices.yaml – Alle Alexa Smart Home Geräte
+# protocol: shelly (HTTP API), z2m (Zigbee2MQTT), mqtt (generisch), esphome (HTTP)
+# topic_id: MQTT friendly_name (nur bei z2m, wenn ≠ id)
+
+# INTERIOR_BLIND, TEMPERATURE_SENSOR, THERMOSTAT, LIGHT, SWITCH, SENSOR
+
+
+# ──────────────────────────────────────────────
+# Rollläden (Shelly HTTP)
+# ──────────────────────────────────────────────
+- id: rollladen_kueche
+  name: "Rollladen Küche"
+  type: roller
+  category: INTERIOR_BLIND
+  protocol: shelly
+  ip: "10.1.1.160"
+  channel: "0"
+  hardware: Shelly 2PM
+
+- id: rollladen_schlafzimmer
+  name: "Rollladen Schlafzimmer"
+  type: roller
+  category: INTERIOR_BLIND
+  protocol: shelly
+  ip: "10.1.1.4"
+  channel: "0"
+  hardware: Shelly 2PM
+
+- id: rollladen_wohnzimmer_nord
+  name: "Rollladen Wohnzimmer Nord"
+  type: roller
+  category: INTERIOR_BLIND
+  protocol: shelly
+  ip: "10.1.1.86"
+  channel: "0"
+  hardware: Shelly 2PM
+
+- id: rollladen_wohnzimmer_sued
+  name: "Rollladen Wohnzimmer Süd"
+  type: roller
+  category: INTERIOR_BLIND
+  protocol: shelly
+  ip: "10.1.1.102"
+  channel: "0"
+  hardware: Shelly 2PM
+
+# ──────────────────────────────────────────────
+# Temperatursensoren (Zigbee2MQTT)
+# ──────────────────────────────────────────────
+- id: weather_outnorth_temperature
+  name: "Temperatur Nordseite"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  protocol: z2m
+  topic_id: weather-outnorth
+  hardware: Aqara Temperatursensor
+
+- id: weather_heizraum_temperature
+  name: "Temperatur Heizraum"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  protocol: z2m
+  topic_id: weather-heizraum
+  hardware: Aqara Temperatursensor
+
+- id: weather_flur_temperature
+  name: "Temperatur Eingang"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  protocol: z2m
+  topic_id: weather-flur
+  hardware: Aqara Temperatursensor
+
+- id: vorratsraum_temperatur
+  name: "Temperatur Vorratsraum"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  protocol: z2m
+  topic_id: weather-sonoff1
+  hardware: Sonoff Temperatursensor
+
+- id: temp_sensor_temperature_buro
+  name: "Temperatur Büro"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  protocol: z2m
+  topic_id: weather-sonoff3
+  hardware: BTHome Xiaomi
+
+- id: weather_wc_temperature
+  name: "Temperatur Gäste WC"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  protocol: z2m
+  topic_id: weather-wc
+  hardware: Aqara Temperatursensor
+
+- id: weather_kitchen_temperature
+  name: "Temperatur Küche"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  protocol: z2m
+  topic_id: weather-kitchen
+  hardware: Aqara Temperatursensor
+
+- id: weather_bad_temperature
+  name: "Temperatur Bad"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  protocol: z2m
+  topic_id: weather-bad
+  hardware: Aqara Temperatursensor
+
+- id: weather_bedroom_temperature
+  name: "Temperatur Schlafzimmer"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  protocol: z2m
+  topic_id: weather-bedroom
+  hardware: Aqara Temperatursensor
+
+- id: weather_kz1_temperature
+  name: "Temperatur Gästezimmer 1"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  protocol: z2m
+  topic_id: weather-kz1
+  hardware: Aqara Temperatursensor
+
+- id: weather_kz2_temperature
+  name: "Temperatur Gästezimmer 2"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  protocol: z2m
+  topic_id: weather-kz2
+  hardware: Aqara Temperatursensor
+
+# ──────────────────────────────────────────────
+# Heizungsthermostate (Zigbee2MQTT)
+# ──────────────────────────────────────────────
+- id: thermostat_bad
+  name: "Heizung Bad"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: z2m
+  topic_id: thermostat-bad
+  hardware: Hama Zigbee Thermostat
+
+- id: thermostat_fitnessraum
+  name: "Heizung Fitnessraum 1"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: z2m
+  topic_id: thermostat-fitnessraum
+  hardware: Hama Zigbee Thermostat
+
+- id: thermostat_fitnessraum2
+  name: "Heizung Fitnessraum 2"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: z2m
+  topic_id: thermostat-fitnessraum2
+  hardware: Hama Zigbee Thermostat
+
+- id: thermostat_fitnessraum3
+  name: "Heizung Fitnessraum 3"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: z2m
+  topic_id: thermostat-fitnessraum3
+  hardware: Hama Zigbee Thermostat
+
+- id: thermostat_kinderzimmer1
+  name: "Heizung Gästezimmer 1"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: z2m
+  topic_id: thermostat-kinderzimmer1
+  hardware: Hama Zigbee Thermostat
+
+- id: thermostat_kinderzimmer2
+  name: "Heizung Gästezimmer 2"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: z2m
+  topic_id: thermostat-kinderzimmer2
+  hardware: Hama Zigbee Thermostat
+
+- id: thermostat_kitchen
+  name: "Heizung Küche"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: z2m
+  topic_id: thermostat-kitchen
+  hardware: Hama Zigbee Thermostat
+
+- id: thermostat_office
+  name: "Heizung Büro"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: z2m
+  topic_id: thermostat-office
+  hardware: Hama Zigbee Thermostat
+
+- id: thermostat_schlafzimmer
+  name: "Heizung Schlafzimmer"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: z2m
+  topic_id: thermostat-schlafzimmer
+  hardware: Hama Zigbee Thermostat
+
+- id: thermostat_hauseingang
+  name: "Heizung Hauseingang"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: z2m
+  topic_id: thermostat-hauseingang
+  hardware: Hama Zigbee Thermostat
+
+- id: thermostat_wc
+  name: "Heizung Gäste WC"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: z2m
+  topic_id: thermostat-wc
+  hardware: Hama Zigbee Thermostat
+
+- id: thermostat_wohnzimmer1
+  name: "Heizung Wohnzimmer Nord"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: z2m
+  topic_id: thermostat-wohnzimmer1
+  hardware: Hama Zigbee Thermostat
+
+- id: thermostat_wohnzimmer2
+  name: "Heizung Wohnzimmer Süd"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: z2m
+  topic_id: thermostat-wohnzimmer2
+  hardware: Hama Zigbee Thermostat
+
+# ──────────────────────────────────────────────
+# Lichter
+# ──────────────────────────────────────────────
+- id: lichtdimmer_kueche
+  name: "Tisch Licht Küche"
+  type: dimmer
+  category: LIGHT
+  protocol: shelly
+  ip: "10.1.1.107"
+  channel: "0"
+  hardware: Shelly Dimmer
+
+- id: rgb_fernseherlicht
+  name: "Wohnzimmer Fernsehlicht"
+  type: light
+  category: LIGHT
+  protocol: z2m
+  topic_id: rgb-fernseherlicht
+  hardware: Zigbee RGB Strip
+
+- id: officelight
+  name: "Bürolicht"
+  type: switch
+  category: LIGHT
+  protocol: shelly
+  ip: "10.1.1.88"
+  channel: "0"
+  hardware: Shelly 1
+
+- id: wintergartenlicht
+  name: "Wintergartenlicht"
+  type: switch
+  category: LIGHT
+  protocol: shelly
+  ip: "10.1.1.77"
+  channel: "0"
+  hardware: Shelly Mini1PMG3
+
+# ──────────────────────────────────────────────
+# Schalter (Shelly HTTP)
+# ──────────────────────────────────────────────
+- id: wasserbrunnen
+  name: "Gartenbrunnen"
+  type: switch
+  category: SWITCH
+  protocol: shelly
+  ip: "10.1.1.16"
+  channel: "0"
+  hardware: Shelly Plus 1PM
+
+- id: hausanschluss
+  name: "Überschuss Steuerung"
+  type: switch
+  category: SWITCH
+  protocol: shelly
+  ip: "10.1.1.109"
+  channel: "0"
+  hardware: Shelly 3EM
+
+- id: panasonic_mikrowelle
+  name: "Panasoinic Mikrowelle"
+  type: switch
+  category: SWITCH
+  protocol: shelly
+  ip: "10.1.1.110"
+  channel: "0"
+  hardware: Shelly Plus 1PM
+
+- id: mediaswitch_switch_0
+  name: "Fernsehanlage"
+  type: switch
+  category: SWITCH
+  protocol: shelly
+  ip: "10.1.1.234"
+  channel: "0"
+  hardware: Shelly 1
+
+- id: waschmaschine
+  name: "Waschmaschine"
+  type: switch
+  category: SWITCH
+  protocol: shelly
+  ip: "10.1.1.90"
+  channel: "0"
+  hardware: Shelly 1
+
+# ──────────────────────────────────────────────
+# Schalter (ESPHome HTTP API)
+# http://10.1.1.49/switch/t_roffner
+# {"id":"switch-t_roffner","value":false,"state":"OFF"}
+# ──────────────────────────────────────────────
+- id: turoffner
+  name: "Türöffner"
+  type: switch
+  category: SWITCH
+  protocol: esphome
+  ip: "10.1.1.49"
+  endpoint_on: "switch/t_roffner/turn_on"
+  endpoint_off: "switch/t_roffner/turn_off"
+  hardware: D1Mini ESPHome
+
+# ──────────────────────────────────────────────
+# Sensoren (ESPHome HTTP API)
+# ──────────────────────────────────────────────
+- id: heizung_warmwasser
+  name: "Warmwasser Anzeige"
+  type: sensor
+  category: SENSOR
+  protocol: esphome
+  ip: "10.1.1.59"
+  endpoint_status: "sensor/heizung_warmwasser_anzeige"
+  unit: "m³"
+  alexa: false
+  hardware: ESP32 ESPHome
+
+# ──────────────────────────────────────────────
+# Sensoren (MQTT generisch – Tasmota etc.)
+# ──────────────────────────────────────────────
+- id: thc101_temperature
+  name: "Temperatur Dachgeschoss"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  ip: "10.1.1.248"
+  protocol: mqtt
+  topic_id: "tele/THC101/SENSOR"
+  value_path: "SonoffSC.Temperature"
+  hardware: SonoffSC Tasmota
+
+- id: ecowit_wz_temperature
+  name: "Temperatur Wohnzimmer"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  protocol: mqtt
+  topic_id: "tele/WS3500/Ecowitt"
+  value_path: "indoortempc"
+  hardware: Sanilogic WS3500Ecowit
+
+- id: ecowit_garten_temp
+  name: "Temperatur Garten"
+  type: sensor
+  category: TEMPERATURE_SENSOR
+  protocol: mqtt
+  topic_id: "tele/WS3500/Ecowitt"
+  value_path: "tempc"
+  hardware: Sanilogic WS3500
+
+# ──────────────────────────────────────────────
+# Schalter (MQTT generisch – Tasmota)
+# ──────────────────────────────────────────────
+- id: christbaum
+  name: "Christbaumlicht"
+  type: switch
+  category: SWITCH
+  ip: "10.1.1.225"
+  protocol: mqtt
+  topic_id: "tele/christbaum/STATE"
+  topic: "cmnd/christbaum/POWER"
+  value_path: "POWER"
+  hardware: Sonoff Switch Tasmota
+
+- id: wzlicht2
+  name: "Wohnzimmer LED LICHT 2"
+  type: switch
+  category: SWITCH
+  ip: "10.1.1.225"
+  protocol: mqtt
+  topic_id: "tele/wzlicht2/STATE"
+  topic: "cmnd/wzlicht2/POWER"
+  value_path: "POWER"
+  hardware: Sonoff Arilux LC01
+
+# wzlicht1
+
+- id: trockner
+  name: "Wäschetrockner"
+  type: switch
+  category: SWITCH
+  ip: "10.1.1.43"
+  protocol: mqtt
+  topic_id: "tele/trockner/STATE"
+  topic: "cmnd/trockner/POWER"
+  value_path: "POWER"
+  hardware: Sonoff Switch Tasmota
+
+- id: office4ch_drucker
+  name: "Drucker"
+  type: switch
+  category: SWITCH
+  ip: "10.1.1.121"
+  protocol: mqtt
+  topic_id: "stat/office4ch/POWER1"
+  topic: "cmnd/office4ch/POWER1"
+  hardware: Sonoff 4CH Tasmota
+
+- id: office4ch_lenovo
+  name: "Lenovo"
+  type: switch
+  category: SWITCH
+  ip: "10.1.1.121"
+  protocol: mqtt
+  topic_id: "stat/office4ch/POWER2"
+  topic: "cmnd/office4ch/POWER2"
+  hardware: Sonoff 4CH Tasmota
+
+- id: office4ch_zbox
+  name: "Zbox"
+  type: switch
+  category: SWITCH
+  ip: "10.1.1.121"
+  protocol: mqtt
+  topic_id: "stat/office4ch/POWER3"
+  topic: "cmnd/office4ch/POWER3"
+  hardware: Sonoff 4CH Tasmota
+
+- id: office4ch_windowspc
+  name: "Windows PC"
+  type: switch
+  category: SWITCH
+  ip: "10.1.1.121"
+  protocol: mqtt
+  topic_id: "stat/office4ch/POWER4"
+  topic: "cmnd/office4ch/POWER4"
+  hardware: Sonoff 4CH Tasmota

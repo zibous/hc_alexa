@@ -1,0 +1,251 @@
+mqtt:
+  base_topic: conbee2mqtt
+  server: mqtt://10.1.1.198:4883
+  user: smarthome
+  password: seOnly4Me
+  include_device_information: true
+  client_id: zbnuc2023
+  version: 5
+  reject_unauthorized: false
+  keepalive: 60
+serial:
+  port: /dev/ttyACM0
+  adapter: deconz
+frontend:
+  enabled: true
+  port: 8080
+  extra_css: |
+    html.ha-iframe .sidebar {
+      display: none !important;
+    }
+    html.ha-iframe .main {
+      margin-left: 0 !important;
+    }
+homeassistant:
+  enabled: true
+  discovery_topic: homeassistant
+  status_topic: homeassistant/status
+  use_base_topic_in_identifiers: true
+advanced:
+  channel: 11
+  log_level: debug
+  log_rotation: true
+  log_directory: /app/data/log/%TIMESTAMP%
+  log_file: log.txt
+  log_output:
+    - console
+  timestamp_format: YYYY-MM-DD HH:mm:ss
+  enable_external_js: true
+  network_key:
+    - 175
+    - 77
+    - 231
+    - 6
+    - 119
+    - 70
+    - 51
+    - 198
+    - 117
+    - 158
+    - 27
+    - 229
+    - 221
+    - 151
+    - 170
+    - 44
+  last_seen: ISO_8601_local
+  cache_state: true
+  elapsed: true
+  permit_join_timeout: 3600
+  availability:
+    enabled: true
+    active:
+      timeout: 60
+    passive:
+      timeout: 7200
+  ota:
+    disable_automatic_update_check: true
+    disable_automatic_update: true
+  device_options:
+    retain: false
+devices:
+  '0x5c0272fffe87b6e0':
+    friendly_name: router-ikea-tradfri-01
+    description: 'Flur: Ikea Router Eingangsbereich'
+  '0x5c0272fffe89ffcf':
+    friendly_name: router-ikea-tradfri-02
+    description: 'Schlafzimmer: Ikea Router 1. OG'
+  '0x5c0272fffe98d319':
+    friendly_name: router-ikea-tradfri-03
+    description: 'Fitnessraum: Ikea Router Dachgeschoss'
+  '0xa4c138e6a2fde0d3':
+    friendly_name: thermostat-hauseingang
+    description: 'Hauseingang: Heizungsthermostat Heizkörper'
+  '0x5c0272fffea3472c':
+    friendly_name: thermostat-kinderzimmer1
+    description: 'Kinderzimmer: Tina Heizungsthermostat Heizkörper'
+  '0x60a423fffeb27589':
+    friendly_name: thermostat-kinderzimmer2
+    description: 'Kinderzimmer: Julian Heizungsthermostat Heizkörper'
+  '0x5c0272fffea34570':
+    friendly_name: thermostat-kitchen
+    description: 'Küche: Heizungsthermostat Heizkörper'
+  '0xa4c13889c5f4c7d7':
+    friendly_name: thermostat-office
+    description: 'Büro: Heizungsthermostat'
+  '0x5c0272fffecbff64':
+    friendly_name: thermostat-wc
+    description: 'Gäste WC: Heizungsthermostat'
+  '0x847127fffe0954af':
+    friendly_name: thermostat-wohnzimmer2
+    description: Heizungsthermostat Wohnzimmer Süd
+  '0x5c0272fffea346d5':
+    friendly_name: thermostat-fitnessraum
+    description: 'Fitnessraum: Heizungsthermostat Nord'
+  '0xa4c138dd160d7831':
+    friendly_name: thermostat-fitnessraum2
+    description: 'Fitnessraum: Heizungsthermostat Süd Links'
+  '0xa4c138df882a6807':
+    friendly_name: thermostat-fitnessraum3
+    description: 'Fitnessraum: Heizungsthermostat Süd Rechts'
+  '0x00158d00036d6040':
+    friendly_name: motion-xiaomi-garten
+    description: 'Wintergarten: Bewegungsmelder Garten'
+  '0x00158d000358e8cd':
+    friendly_name: motion-xiaomi-bad
+    description: 'Bad: Bewegungsmelder'
+  '0x00124b002242ec3f':
+    friendly_name: motion-SNZB03-01
+    description: 'Wohnzimmer: Bewegungsmelder'
+  '0xa4c138d06ac083d7':
+    friendly_name: motion-zg01
+    description: 'Hauseingang: Bewegungsmelder TS0601 2025 Haustüre'
+  '0xa4c138560dd10890':
+    friendly_name: motion-tuya-gastwc
+    description: 'Gäste WC: Bewegungsmelder TS0601 2025'
+  '0xa4c1381b874d811f':
+    friendly_name: motion-tuya-office
+    description: 'Büro: Bewegungsmelder TS0601 2025'
+  '0xa4c13801d85d82d7':
+    friendly_name: motion-tuya-wintergarten
+    description: 'Wintergarten: Bewegungsmelder TS0601 2025'
+  '0xa4c138e7f04e27dd':
+    friendly_name: motion-tuya-briefkasten
+    description: 'Hauseingang: Bewegungsmelder 2026 Briefkasten'
+  '0xa4c138fcf55a0622':
+    friendly_name: '0xa4c138fcf55a0622'
+    description: 'Hauseingang: Bewegungsmelder ZG-204Z'
+  '0x588e81fffe233df0':
+    friendly_name: alarm_door_linkind1
+    description: 'Büro: Alarmsystem Linkind contact sensor ZS110050078'
+  '0x588e81fffe23244b':
+    friendly_name: alarm_door_linkind2
+    description: 'Büro: Alarmsystem Linkind contact sensor ZS110050078'
+  '0x00158d0003eef3c6':
+    friendly_name: door-xiaomi-office
+    description: 'Büro: Türkontakt Überwachung Tresor'
+  '0x00158d0003f13798':
+    friendly_name: door-xiaomi-kitchen
+    description: 'Küche: Türkontakt Kühlschrank'
+  '0xa4c13836aee06f0b':
+    friendly_name: door-wintergarten
+    description: 'Wintergarten: Türsensor TUYA TS0203 Türe'
+  '0xa4c1381820d0a4d5':
+    friendly_name: door-gastwc
+    description: 'Gäste WC: Türsensor TUYA TS0203 Türe'
+  '0xa4c138f503edb24d':
+    friendly_name: door-hauseingang
+    description: 'Hauseingang: Türsensor TUYA TS0203 Haustür'
+  '0xa4c1387b1088d102':
+    friendly_name: door-bad
+    description: 'Bad: Türsensor TUYA TS0203 Türe'
+  '0xa4c138ca16834c6e':
+    friendly_name: door-office
+    description: 'Büro: Türsensor TUYA TS0203 Türe'
+  '0xa4c138e98893d0c9':
+    friendly_name: burgwaechter
+    description: 'Hauseingang: Kasten Burgwächter Haustürschloss'
+  '0x00158d00034d1d58':
+    friendly_name: weather-kitchen
+    description: 'Küche: Temperatursensor'
+  '0x00158d00033de1dd':
+    friendly_name: weather-kz1
+    optimistic: true
+    description: 'Kinderzimmer: Tina Temperatursensor'
+  '0x00158d0003498508':
+    friendly_name: weather-kz2
+    description: 'Kinderzimmer: Julian Temperatursensor'
+  '0x00158d00036b7ae0':
+    friendly_name: weather-bedroom
+    description: 'Schlafzimmer: Temperatursensor'
+  '0x00158d00036b56d1':
+    friendly_name: weather-bad
+    description: 'Bad: Temperatursensor'
+  '0x00158d00036d3594':
+    friendly_name: weather-flur
+    description: 'Haueingang: Temperatursenor Eingangsbereich'
+  '0x00158d00042631c2':
+    friendly_name: weather-outnorth
+    description: 'Aussenbereich: Raumthermostat Nord'
+  '0x00158d000586c14e':
+    friendly_name: weather-heizraum
+    description: 'Heizraum: Temperatursensor (Spiegel)'
+    temperature_calibration: ''
+  '0x00124b00226a2b97':
+    friendly_name: weather-sonoff1
+    description: Temperatursensor SNZB-02_EFEKTA Sonoff 1
+    reporting: false
+    legacy: true
+  '0x00124b002242a5e9':
+    friendly_name: weather-sonoff3
+    description: 'Hauseingang: Temperatursensor Gerätehaus Nord SNZB-02_EFEKTA Sonoff 3'
+    reporting: false
+    legacy: true
+  '0x00158d00028079c1':
+    friendly_name: waterleak-kitchen
+    description: 'Küche: Aqara Water Leak Sensor für Küchenspüle, Geschirrspüler'
+  '0x00158d0008059d14':
+    friendly_name: waterleak-washmashine
+    description: >-
+      Heizraum: Aqara Water Leak Sensor für Waschmaschine, Schmutzwasser
+      Hebeanlage
+  '0x00158d00028208ae':
+    friendly_name: waterleak-bad
+    description: 'Bad: Aqara Water Leak Sensor Badezimmer Möbel'
+  '0x00158d00028079c0':
+    friendly_name: waterleak-washer
+    description: 'Heizraum: Aqara Water Leak Sensor für Wasserschacht'
+  '0x00158d00068a51ba':
+    friendly_name: rgb-fernseherlicht
+    description: 'Wohnzimmer: Led Steuerung Fernsehlicht'
+    ota: false
+  '0x00158d00042f226c':
+    friendly_name: remotecontrol-cube
+    description: 'Büro: Steuerungswürfel'
+  '0x680ae2fffe81f382':
+    friendly_name: remotecontrol-ikea-02
+    description: 'Schlafzimmer: TRADFRI remote control IKEA E1524/E1810'
+    legacy: true
+    identify_timeout: 13
+  '0xec1bbdfffe59df34':
+    friendly_name: remotecontrol-ikea-01
+    description: 'Küche: TRADFRI remote control IKEA E1524/E1810'
+    legacy: true
+  '0x00158d008b31b72e':
+    friendly_name: Vibrationssensor
+    description: 'Büro: Steuergerät Vibrationssensor'
+  '0x00158d00034985f3':
+    friendly_name: weather-wc
+    description: 'Gäste WC: Temperatursensor'
+  '0x5c0272fffe8a603b':
+    friendly_name: thermostat-wohnzimmer1
+    description: 'Wohnzimmer: Heizungsthermostat Nord'
+  '0x5c0272fffec213cd':
+    friendly_name: thermostat-bad
+    description: 'Bad: Heizungsthermostat Bad Heizkörper'
+  '0x5c0272fffec2169e':
+    friendly_name: thermostat-schlafzimmer
+    description: 'Schlafzimmer: Heizungsthermostat Heizkörper'
+version: 5
+external_converters:
+  - saswell_fix.js

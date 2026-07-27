@@ -1,0 +1,26 @@
+services:
+  hc-alexa:
+    build: .
+    container_name: hc-alexa
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - TZ=Europe/Berlin
+    volumes:
+      - ${PWD}/data:/app/data
+      - ${PWD}/logs:/app/logs
+      - ${PWD}/frontend:/app/frontend
+    ports:
+      - "5018:5018"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5018/health')"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        compress: "true"

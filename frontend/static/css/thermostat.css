@@ -1,0 +1,114 @@
+/* thermostat.css – Thermostat-Karte */
+
+.thermo-card {
+    text-align: center;
+    padding: 8px 0;
+}
+
+.thermo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.thermo-state {
+    font-size: .8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.thermo-state .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.thermo-state .dot.heating {
+    background: var(--red);
+    animation: pulse-dot 1.5s infinite;
+}
+
+.thermo-state .dot.idle {
+    background: var(--text-muted);
+}
+
+.thermo-badge {
+    font-size: .7rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: rgba(16, 185, 129, .15);
+    color: var(--green);
+}
+
+.thermo-badge.offline {
+    background: rgba(142, 142, 147, .1);
+    color: var(--text-muted);
+}
+
+.thermo-setpoint {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+    margin: 8px 0 4px;
+}
+
+.thermo-current {
+    font-size: .85rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.thermo-slider {
+    width: 100%;
+    accent-color: var(--red);
+    margin: 12px 0;
+}
+
+.thermo-modes {
+    display: flex;
+    gap: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-top: 12px;
+}
+
+.thermo-mode-btn {
+    flex: 1;
+    padding: 10px 0;
+    font-size: .8rem;
+    font-weight: 600;
+    background: var(--bg);
+    color: var(--text-muted);
+    border: none;
+    cursor: pointer;
+    transition: all .15s;
+}
+
+.thermo-mode-btn:hover {
+    background: var(--surface);
+    color: var(--text);
+}
+
+.thermo-mode-btn.active {
+    background: var(--red);
+    color: #fff;
+}
+
+@keyframes pulse-dot {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .4;
+    }
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Dashboard</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2'%3E%3Cpath d='m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header class="header">
+        <h1>Smart Home</h1>
+        <span class="header-status" id="headerStatus">Verbinde...</span>
+    </header>
+
+    <main class="container">
+        <div class="device-grid" id="deviceGrid"></div>
+    </main>
+
+    <footer>
+        <span>Smart Home Dashboard</span>
+        <span class="sep">·</span>
+        <span id="themeToggle" style="cursor:pointer">🌓 Design</span>
+    </footer>
+
+    <!-- DEV: Module (kein Bundle nötig) -->
+    <script type="module" src="js/app.js"></script>
+    <!-- PROD: Bundle (make jsbuild) -->
+    <!-- <script type="module" src="js/app.bundle.js"></script> -->
+</body>
+
+</html>

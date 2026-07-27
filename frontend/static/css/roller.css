@@ -1,0 +1,83 @@
+/* roller.css – Rollladen-Steuerung */
+
+.roller-visual {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin: 12px 0;
+}
+
+.roller-buttons-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.roller-window-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.roller-window-wrap .roller-handle {
+    cursor: ns-resize;
+    transition: r .15s;
+}
+
+.roller-window-wrap .roller-handle:hover,
+.roller-window-wrap.dragging .roller-handle {
+    r: 8;
+    opacity: 1;
+}
+
+.roller-window-wrap .roller-cloth {
+    cursor: ns-resize;
+}
+
+.roller-pos-badge {
+    font-size: .85rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 6px;
+}
+
+.btn-roller {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .15s;
+}
+
+.btn-roller:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.btn-roller:hover svg {
+    stroke: #fff;
+}
+
+.btn-roller.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 8px rgba(59, 130, 246, .4);
+}
+
+.btn-roller.active svg {
+    stroke: #fff;
+}
+
+.btn-roller:active {
+    transform: scale(.9);
+}
