@@ -66,3 +66,19 @@
 * [ ] Alexa.Discovery: Handler für die automatische Gerätesuche in Alexa.
 * [ ] Protokoll-Treiber: HTTP-Client (Shelly) und MQTT-Client (Zigbee) implementieren.
 * [ ] Docker-Setup: `Dockerfile` und `docker-compose.yml` erstellen.
+
+
+## KPI
+
+
+@router.get("/kpidata", response_model=KpiResponse, response_model_exclude_none=True)
+async def get_kpi_data(user: str | None = Query(None, description="User-Name (peter/reni) für personenbezogene KPI")):
+    """Liefert KPI-Daten für das zentrale Übersichts-Dashboard."""
+    service = KpiService()
+
+Daten:
+- Anzahl Geräte nach Katgorie (Auswertung über devices.yaml)
+- Anzahl Zugriffe über /api/alexa/smart_home nach Katgorie
+- Letzter Zugriff
+- Letzter Aktion
+- Online seit

@@ -18,10 +18,12 @@ __pycache__/
 # -----------------------------------------------
 # Data (runtime, not source)
 # -----------------------------------------------
-# Inhalt des data-Ordners ignorieren
 data/*.db
+data/z2m_state.json
+data/z2m_config.yaml
 
-# Die .gitkeep Datei explizit erlauben
+# devices.yaml ist Source – explizit erlauben
+!data/devices.yaml
 !data/.gitkeep
 
 logs/
@@ -55,3 +57,9 @@ build/
 dist/
 fehler.txt
 scripts/xml/
+discovery.json
+frontend/static/js/*.bundle.js
+frontend/static/js/*.bundle.js.map
+frontend/static/css/*.bundle.css
+frontend/static/css/*.bundle.css.map
+frontend/static/css/theme.css
