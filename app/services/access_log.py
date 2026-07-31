@@ -16,6 +16,7 @@ class AccessLog:
         self._last_access: str | None = None
         self._last_action: str | None = None
         self._start_time = datetime.now()
+        self._alexa_devices: set[str] = set()
 
     @classmethod
     def get(cls) -> "AccessLog":
@@ -43,3 +44,11 @@ class AccessLog:
 
     def online_since(self) -> str:
         return self._start_time.strftime("%Y-%m-%d %H:%M")
+
+    def track_alexa_device(self, endpoint_id: str):
+        """Merkt sich welche Geräte Alexa per ReportState abfragt."""
+        self._alexa_devices.add(endpoint_id)
+
+    def alexa_devices(self) -> set[str]:
+        """Geräte die Alexa kennt (aus ReportState-Requests)."""
+        return self._alexa_devices

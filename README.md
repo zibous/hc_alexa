@@ -45,8 +45,26 @@ ALEXA BEFEHL: "Alexa, Rollladen Küche auf 50%"
 ALEXA FRAGE: "Alexa, wie warm ist es in der Küche?"
 
   Alexa ──▶ Lambda ──▶ Nginx ──▶ FastAPI ──▶ StatusCache (MQTT/Z2M)
-    ◀── "25.3 Grad" ◀── JSON ◀── Response ◀── weather-kitchen: 25.3°C
+    ◀── "25.3 Grad" ◀── JSON ◀── StateReport ◀── weather-kitchen: 25.3°C
 ```
+
+## Alexa StateReport – Echtzeit-Temperaturwerte
+
+Alexa fragt regelmäßig (ca. alle 60 Sekunden) den Status aller Geräte per `ReportState` ab.
+Die Antwort muss als **`StateReport`** formatiert sein (nicht `Response`), damit Alexa die Werte korrekt übernimmt.
+
+Wichtig: Die `endpointId` in der Antwort muss exakt dem Format der Anfrage entsprechen (mit `#`-Trennzeichen), sonst kann Alexa die Antwort nicht zuordnen und zeigt veraltete Werte an.
+
+### StateReport pro Gerätetyp
+
+| Gerätetyp | Alexa Properties |
+|-----------|-----------------|
+| `sensor` | `TemperatureSensor.temperature` |
+| `thermostat` | `ThermostatController.targetSetpoint` + `thermostatMode` + `TemperatureSensor.temperature` |
+| `switch` / `light` / `dimmer` | `PowerController.powerState` |
+| `roller` | `RangeController.rangeValue` |
+
+Jede Antwort enthält zusätzlich `EndpointHealth.connectivity = OK`.
 
 ## Protokolle
 
@@ -82,28 +100,31 @@ hc_alexa/
 ├── app/
 │   ├── api/
 │   │   ├── alexa_router.py        POST /api/alexa/smart_home
+│   │   ├── alexa_admin.py         Admin: Token-Status, Delete-Devices, Compare
+│   │   ├── oauth_router.py        OAuth2 Account Linking für Alexa Skill
 │   │   ├── dashboard_router.py    GET /api/devices, POST /api/control
 │   │   └── kpi_router.py          GET /api/kpidata
 │   ├── config/
 │   │   ├── settings.py            Pydantic Settings aus .env
 │   │   └── logging_config.py
 │   ├── core/
-│   │   └── device_loader.py       Lädt devices.yaml (cached)
+│   │   └── device_loader.py       Lädt devices.yaml (cached, hot-reload)
 │   ├── infrastructure/
 │   │   ├── mqtt_client.py         Persistenter MQTT Publisher
-│   │   └── status_cache.py        Z2M State + MQTT Live-Updates
+│   │   └── status_cache.py        Z2M State + MQTT Live-Updates + ChangeReport Trigger
 │   ├── models/
 │   │   └── device.py              DeviceConfig Pydantic Model
 │   ├── processor/
-│   │   ├── alexa_processor.py     Routing: Discovery/Control/State
+│   │   ├── alexa_processor.py     Routing: Discovery/Control/State + endpointId Handling
 │   │   ├── handlers/
-│   │   │   ├── discovery.py       Alexa.Discovery Handler
+│   │   │   ├── discovery.py       Alexa.Discovery Handler (proactivelyReported: false)
 │   │   │   ├── control.py         Power/Brightness/Position/Thermostat
-│   │   │   └── state.py           ReportState (Temperatur)
+│   │   │   └── state.py           StateReport (alle Gerätetypen)
 │   │   └── helpers.py
 │   ├── schemas/
 │   │   └── kpi.py
 │   ├── services/
+│   │   ├── change_report.py       Proaktive ChangeReports an Alexa Event Gateway
 │   │   ├── kpi_service.py
 │   │   └── access_log.py
 │   └── main.py
@@ -117,12 +138,31 @@ hc_alexa/
 │   └── js/                         Modulares JS (10 Dateien)
 ├── scripts/
 │   └── sync_z2m.sh               Z2M-Daten per SCP holen
+├── aws/
+│   ├── alexa-smart-home-skill/    Lambda für hc SmartHome Skill
+│   └── HA_ALEXA.py               Lambda für Homeassistant Skill
 ├── Dockerfile
 ├── docker-compose.yml
 ├── Makefile
 ├── requirements.txt
 └── .env
 ```
+
+## API Endpoints
+
+| Endpoint | Methode | Beschreibung |
+|----------|---------|--------------|
+| `/api/alexa/smart_home` | POST | Alexa Smart Home Directive Endpoint |
+| `/api/devices` | GET | Dashboard: Alle Geräte mit Status |
+| `/api/control` | POST | Dashboard: Gerät steuern |
+| `/api/kpidata` | GET | KPI-Daten für Übersichts-Dashboard |
+| `/api/debug/cache` | GET | Roher MQTT-Cache (Entwicklung) |
+| `/api/admin/token-status` | GET | Alexa Token und ChangeReport Status |
+| `/api/admin/compare-devices` | GET | Vergleich devices.yaml vs. Alexa |
+| `/api/admin/delete-devices` | POST | Geräte bei Alexa entfernen (DeleteReport) |
+| `/oauth/authorize` | GET | OAuth2 Authorization (Account Linking) |
+| `/oauth/token` | POST | OAuth2 Token Exchange |
+| `/health` | GET | Health-Check |
 
 ## Makefile Befehle
 
@@ -132,6 +172,7 @@ make sync-z2m         # Z2M State-Dateien vom Remote holen
 make up               # Docker starten (mit Z2M-Sync)
 make rebuild          # Docker neu bauen + starten
 make jsbuild          # Frontend JS/CSS bundeln
+make logs             # Docker Logs verfolgen
 make test-discovery   # Alexa Discovery simulieren
 make test-power-on    # Schalter einschalten testen
 make test-roller      # Rollladen Position testen
@@ -156,47 +197,36 @@ AWS Console → Lambda → Funktion erstellen:
 
 ```python
 """AWS Lambda Handler für Alexa Smart Home Skill."""
-import json
-import urllib.request
-
-# Dein Server (HTTPS, via Nginx)
-ENDPOINT = "https://ips.siebler.at/api/alexa/smart_home"
+import os, json, urllib3
 
 def lambda_handler(event, context):
-    """Leitet den Alexa-Request an deinen Server weiter."""
-    payload = json.dumps(event).encode("utf-8")
+    base_url = os.environ.get('BASE_URL', '').strip("/")
+    verify_ssl = not bool(os.environ.get('NOT_VERIFY_SSL'))
 
-    req = urllib.request.Request(
-        ENDPOINT,
-        data=payload,
-        headers={"Content-Type": "application/json"},
-        method="POST",
+    http = urllib3.PoolManager(
+        cert_reqs='CERT_REQUIRED' if verify_ssl else 'CERT_NONE',
+        timeout=urllib3.Timeout(connect=2.0, read=10.0)
     )
 
-    try:
-        with urllib.request.urlopen(req, timeout=8) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except Exception as e:
-        return {
-            "event": {
-                "header": {
-                    "namespace": "Alexa",
-                    "name": "ErrorResponse",
-                    "payloadVersion": "3",
-                    "messageId": event.get("directive", {}).get("header", {}).get("messageId", ""),
-                },
-                "payload": {
-                    "type": "BRIDGE_UNREACHABLE",
-                    "message": str(e),
-                },
-            }
-        }
+    response = http.request(
+        'POST',
+        f'{base_url}/api/alexa/smart_home',
+        headers={'Content-Type': 'application/json'},
+        body=json.dumps(event).encode('utf-8'),
+    )
+
+    if response.status >= 400:
+        return {'event': {'payload': {'type': 'INTERNAL_ERROR',
+                'message': response.data.decode("utf-8")}}}
+
+    return json.loads(response.data.decode('utf-8'))
 ```
 
 ### 3. Lambda-Konfiguration
 - Timeout: **10 Sekunden** (Alexa erlaubt max 8s)
 - Memory: **128 MB** (reicht für URL-Forward)
-- Trigger: Wird vom Alexa Skill hinzugefügt (Schritt 5)
+- Umgebungsvariablen: `BASE_URL=https://<domain>/`
+- Trigger: Wird vom Alexa Skill hinzugefügt
 
 ---
 
@@ -206,42 +236,37 @@ def lambda_handler(event, context):
 
 1. Öffne https://developer.amazon.com/alexa/console/ask
 2. **Create Skill**
-   - Name: `Mein Smart Home`
+   - Name: `hc SmartHome`
    - Locale: `German (DE)`
    - Type: **Smart Home**
-   - Hosting: **Provision your own** (nicht Alexa-hosted)
+   - Hosting: **Provision your own**
 3. **Smart Home Service Endpoint**
    - Default endpoint: ARN deiner Lambda-Funktion
-   - (z.B. `arn:aws:lambda:eu-west-1:123456789:function:alexa-smart-home-skill`)
 
-### 5. Lambda Trigger konfigurieren
+### 5. Account Linking
 
-AWS Console → Lambda → deine Funktion → Trigger hinzufügen:
+Unter "Account Linking" konfigurieren:
+- Authorization URI: `https://<domain>/oauth/authorize`
+- Access Token URI: `https://<domain>/oauth/token`
+- Client ID: `alexa-smarthome`
+- Scope: `smarthome`
+
+### 6. Lambda Trigger
+
+AWS Console → Lambda → Trigger hinzufügen:
 - Trigger: **Alexa Smart Home**
-- Skill ID: Die Skill-ID aus der Developer Console (Format: `amzn1.ask.skill.xxx-xxx-xxx`)
-
-### 6. Account Linking (optional aber empfohlen)
-
-Für einen privaten Skill ohne Account Linking:
-- In der Developer Console → Permissions → keine aktivieren
-- Der Skill funktioniert ohne OAuth (da er nur auf deinem Account läuft)
-
-Alternativ: Setze ein einfaches Bearer-Token in den Authorization-Header das dein Nginx prüft.
+- Skill ID: `amzn1.ask.skill.xxx-xxx-xxx`
 
 ---
 
 ## Alexa App: Skill aktivieren
 
-### 7. Skill in der Alexa App aktivieren
+1. Alexa App → **Mehr → Skills & Spiele → Deine Skills → Entwickler**
+2. Skill aktivieren + Account Linking durchführen
+3. "Alexa, suche meine Geräte"
+4. Alle Geräte aus `devices.yaml` erscheinen
 
-1. Öffne die **Alexa App** auf dem Handy
-2. **Mehr → Skills & Spiele → Deine Skills → Entwickler**
-3. Dein Skill `Mein Smart Home` erscheint dort
-4. **Aktivieren**
-5. Alexa führt automatisch eine **Discovery** durch
-6. Alle Geräte aus `devices.yaml` erscheinen in der Alexa App
-
-### 8. Geräte testen
+### Testen
 
 ```
 "Alexa, suche nach neuen Geräten"
@@ -267,6 +292,12 @@ location /api/alexa/smart_home {
     proxy_set_header Authorization $http_authorization;
 }
 
+# OAuth Endpoints für Account Linking
+location /oauth/ {
+    proxy_pass $alexa_backend;
+    proxy_set_header Host $host;
+}
+
 # Dashboard (Browser)
 location ^~ /dashboardalexa/ {
     proxy_pass http://10.1.1.119:5018/;
@@ -284,6 +315,8 @@ MQTT_USER=smarthome
 MQTT_PASS=********
 MQTT_KEEPALIVE=60
 Z2M_TOPIC_BASE=conbee2mqtt
+OAUTH_CLIENT_ID=alexa-smarthome
+OAUTH_TOKEN=smarthome-alexa-token-2026
 DEVICES_YAML_PATH=data/devices.yaml
 ```
 
@@ -306,3 +339,11 @@ DEVICES_YAML_PATH=data/devices.yaml
 │  :4883       │    Änderungen          │              │
 └──────────────┘                        └──────────────┘
 ```
+
+---
+
+## Bekannte Einschränkungen
+
+- **Proaktive ChangeReports** erfordern ein LWA (Login with Amazon) Refresh Token. Aktuell pollt Alexa per StateReport (ca. alle 60s). Für Echtzeit-Push muss "Send Alexa Events" in der Developer Console aktiviert werden.
+- **Skill-Wechsel** führt zum Verlust aller Raum-Zuordnungen und Routinen in der Alexa App. Geräte bleiben als "Geister" erhalten auch nach Skill-Deaktivierung.
+- **Namenskonflikte** bei Sensoren und Thermostaten im gleichen Raum (z.B. "Temperatur Gästezimmer 1" vs. "Heizung Gästezimmer 1") – Lösung: Eindeutige Namen oder Alexa-Raum-Zuordnung nutzen.

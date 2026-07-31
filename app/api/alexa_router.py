@@ -4,6 +4,7 @@ from fastapi import APIRouter, Request
 from app.processor.alexa_processor import AlexaProcessor
 from app.services.access_log import AccessLog
 from app.api.alexa_admin import store_token
+from app.services.change_report import ChangeReportService
 
 logger = logging.getLogger(__name__)
 
@@ -30,8 +31,20 @@ async def handle_alexa_smart_home(request: Request):
     scope = directive.get("endpoint", {}).get("scope") or directive.get("payload", {}).get("scope")
     if scope and scope.get("token"):
         store_token(scope["token"])
+        # Token auch für proaktive ChangeReports speichern
+        ChangeReportService.get().set_token(scope["token"])
+
+    # Alexa-bekannte Geräte tracken (aus ReportState Requests)
+    if namespace == "Alexa" and name == "ReportState" and endpoint_id != "–":
+        AccessLog.get().track_alexa_device(endpoint_id)
 
     response = await processor.process_request(payload)
+
+    # StateReport Response loggen für Debugging
+    if namespace == "Alexa" and name == "ReportState":
+        props = response.get("context", {}).get("properties", [])
+        resp_name = response.get("event", {}).get("header", {}).get("name", "?")
+        logger.info("STATEREPORT RESPONSE [%s] header=%s props=%s", endpoint_id, resp_name, json.dumps(props)[:300])
 
     # Bei Discovery: Endpoint-IDs und Payload loggen
     if namespace == "Alexa.Discovery":

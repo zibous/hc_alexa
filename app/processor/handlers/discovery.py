@@ -83,7 +83,7 @@ class DiscoveryHandler:
             "version": "3",
             "properties": {
                 "supported": [{"name": "powerState"}],
-                "proactivelyReported": True,
+                "proactivelyReported": False,
                 "retrievable": True,
             },
         }
@@ -95,7 +95,7 @@ class DiscoveryHandler:
             "version": "3",
             "properties": {
                 "supported": [{"name": "brightness"}],
-                "proactivelyReported": True,
+                "proactivelyReported": False,
                 "retrievable": True,
             },
         }
@@ -107,7 +107,7 @@ class DiscoveryHandler:
             "version": "3",
             "properties": {
                 "supported": [{"name": "detectionState"}],
-                "proactivelyReported": True,
+                "proactivelyReported": False,
                 "retrievable": True,
             },
         }
@@ -119,7 +119,7 @@ class DiscoveryHandler:
             "version": "3",
             "properties": {
                 "supported": [{"name": "temperature"}],
-                "proactivelyReported": True,
+                "proactivelyReported": False,
                 "retrievable": True,
             },
         }
@@ -131,7 +131,7 @@ class DiscoveryHandler:
             "version": "3",
             "properties": {
                 "supported": [{"name": "thermostatMode"}, {"name": "targetSetpoint"}],
-                "proactivelyReported": True,
+                "proactivelyReported": False,
                 "retrievable": True,
             },
             "configuration": {
@@ -193,7 +193,7 @@ class DiscoveryHandler:
             "version": "3",
             "properties": {
                 "supported": [{"name": "connectivity"}],
-                "proactivelyReported": True,
+                "proactivelyReported": False,
                 "retrievable": True,
             },
         }

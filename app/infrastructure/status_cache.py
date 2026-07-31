@@ -152,6 +152,9 @@ class StatusCache:
                 if isinstance(payload, dict):
                     self._cache[rest] = payload
                     self._msg_count += 1
+                    # Proaktive ChangeReports bei Temperaturänderung
+                    if "temperature" in payload:
+                        self._notify_change_report(rest, payload["temperature"])
             except (json.JSONDecodeError, UnicodeDecodeError):
                 pass
             return
@@ -166,9 +169,30 @@ class StatusCache:
                 payload = json.loads(raw)
                 if isinstance(payload, dict):
                     self._cache[topic] = payload
+                    # Proaktive ChangeReports bei Temperaturänderung
+                    if "temperature" in payload:
+                        self._notify_change_report(topic, payload["temperature"])
             self._msg_count += 1
 
             if self._msg_count <= 5 or self._msg_count % 20 == 0:
                 logger.info("StatusCache: MQTT %s (total: %d)", topic, self._msg_count)
         except (json.JSONDecodeError, UnicodeDecodeError):
             pass
+
+    def _notify_change_report(self, topic_id: str, temperature):
+        """Benachrichtigt den ChangeReport-Service über Temperaturänderungen."""
+        try:
+            from app.core.device_loader import load_devices
+            from app.services.change_report import ChangeReportService
+
+            cr = ChangeReportService.get()
+            if not cr.has_token:
+                return
+
+            # topic_id → device.id Mapping (für Alexa endpoint_id)
+            for d in load_devices():
+                if d.type == "sensor" and (d.topic_id == topic_id or d.id == topic_id):
+                    cr.check_and_report(d.id, float(temperature))
+                    break
+        except Exception as e:
+            logger.debug("ChangeReport notify fehlgeschlagen: %s", e)

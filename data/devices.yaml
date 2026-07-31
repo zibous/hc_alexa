@@ -280,6 +280,20 @@
   channel: "0"
   hardware: Shelly Mini1PMG3
 
+- id: switch.wzlicht2
+  name: "Wohnzimmer LED LICHT 2"
+  type: light
+  category: LIGHT
+  protocol: mqtt
+  alexa: false
+  topic_id: "tele/wzlicht2/STATE"
+  topic: "cmnd/wzlicht2/POWER"
+  value_path: "POWER"
+  hardware: Sonoff Arilux LC01
+
+# wzlicht1
+
+
 # ──────────────────────────────────────────────
 # Schalter (Shelly HTTP)
 # ──────────────────────────────────────────────
@@ -402,19 +416,6 @@
   value_path: "POWER"
   hardware: Sonoff Switch Tasmota
 
-- id: switch.wzlicht2
-  name: "Wohnzimmer LED LICHT 2"
-  type: switch
-  category: SWITCH
-  ip: "10.1.1.225"
-  protocol: mqtt
-  topic_id: "tele/wzlicht2/STATE"
-  topic: "cmnd/wzlicht2/POWER"
-  value_path: "POWER"
-  hardware: Sonoff Arilux LC01
-
-# wzlicht1
-
 - id: switch.trockner
   name: "Wäschetrockner"
   type: switch
@@ -432,6 +433,7 @@
   category: SWITCH
   ip: "10.1.1.121"
   protocol: mqtt
+  alexa: false
   topic_id: "stat/office4ch/POWER1"
   topic: "cmnd/office4ch/POWER1"
   hardware: Sonoff 4CH Tasmota
@@ -442,6 +444,7 @@
   category: SWITCH
   ip: "10.1.1.121"
   protocol: mqtt
+  alexa: false
   topic_id: "stat/office4ch/POWER2"
   topic: "cmnd/office4ch/POWER2"
   hardware: Sonoff 4CH Tasmota
@@ -452,6 +455,7 @@
   category: SWITCH
   ip: "10.1.1.121"
   protocol: mqtt
+  alexa: false
   topic_id: "stat/office4ch/POWER3"
   topic: "cmnd/office4ch/POWER3"
   hardware: Sonoff 4CH Tasmota
@@ -462,6 +466,7 @@
   category: SWITCH
   ip: "10.1.1.121"
   protocol: mqtt
+  alexa: false
   topic_id: "stat/office4ch/POWER4"
   topic: "cmnd/office4ch/POWER4"
   hardware: Sonoff 4CH Tasmota

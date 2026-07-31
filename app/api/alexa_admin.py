@@ -82,7 +82,39 @@ async def delete_devices(req: DeleteRequest):
 @router.get("/token-status")
 async def token_status():
     """Zeigt ob ein Alexa-Token vorhanden ist."""
+    from app.services.change_report import ChangeReportService
+    cr = ChangeReportService.get()
     return {
         "has_token": _last_token is not None,
         "token_preview": _last_token[:20] + "..." if _last_token else None,
+        "change_report_active": cr.has_token,
+        "last_reported_count": len(cr._last_reported),
+    }
+
+
+@router.get("/compare-devices")
+async def compare_devices():
+    """Vergleicht devices.yaml mit den bei Alexa registrierten Geräten."""
+    from app.core.device_loader import load_devices
+    from app.services.access_log import AccessLog
+
+    devices = load_devices()
+    yaml_ids = {d.id.replace(".", "#") for d in devices if d.alexa}
+    alexa_ids = AccessLog.get().alexa_devices()
+
+    # Normalisiere Alexa-IDs (entferne evtl. Prefixes)
+    alexa_normalized = set()
+    for aid in alexa_ids:
+        alexa_normalized.add(aid)
+
+    in_yaml_not_alexa = sorted(yaml_ids - alexa_normalized)
+    in_alexa_not_yaml = sorted(alexa_normalized - yaml_ids)
+    matching = sorted(yaml_ids & alexa_normalized)
+
+    return {
+        "yaml_count": len(yaml_ids),
+        "alexa_count": len(alexa_normalized),
+        "matching": len(matching),
+        "in_yaml_not_alexa": in_yaml_not_alexa,
+        "in_alexa_not_yaml": in_alexa_not_yaml,
     }

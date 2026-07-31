@@ -43,7 +43,7 @@ class ControlHandler:
                 self._send_position(target_device, position)
                 ctx.append(self._prop("Alexa.RangeController", "rangeValue", position, instance="Blind.Position"))
 
-            elif namespace == "Alexa.ThermostatController" and name == "SetTargetSetpoint":
+            elif namespace == "Alexa.ThermostatController" and name in ("SetTargetSetpoint", "SetTargetTemperature"):
                 temp = directive.get("payload", {}).get("targetSetpoint", {}).get("value")
                 self._send_temperature(target_device, temp)
                 ctx.append(self._prop("Alexa.ThermostatController", "targetSetpoint", {"value": temp, "scale": "CELSIUS"}))
@@ -82,6 +82,10 @@ class ControlHandler:
             httpx.get(f"http://{d.ip}/light/{d.channel}?turn=on&brightness={brightness}", timeout=5)
         elif d.protocol == "z2m":
             self.mqtt.publish(f"{settings.Z2M_TOPIC_BASE}/{d.mqtt_name}/set", {"brightness": brightness})
+        elif d.protocol == "mqtt" and d.topic:
+            # Tasmota: cmnd/{device}/Dimmer → 0-100
+            base_topic = d.topic.rsplit("/", 1)[0]  # cmnd/wzlicht2/POWER → cmnd/wzlicht2
+            self.mqtt.publish(f"{base_topic}/Dimmer", str(brightness))
 
     def _send_position(self, d: DeviceConfig, position: int):
         if d.protocol == "shelly":

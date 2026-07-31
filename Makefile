@@ -159,6 +159,10 @@ compare-discovery:
 	diff <(python3 -c "import json; [print(e['endpointId']) for e in json.load(open('ha_discovery.json'))['event']['payload']['endpoints']]" | sort) <(python3 -c "import json; [print(e['endpointId']) for e in json.load(open('hc_discovery.json'))['event']['payload']['endpoints']]" | sort)
 
 
+compare-alexaapp:
+	curl -s http://10.1.1.119:5018/api/admin/compare-devices | python3 -m json.tool
+
+
 # --- TEST BEFEHLE (simuliert AWS Lambda → FastAPI) ---
 HOST := 10.1.1.119
 PORT := 5018
