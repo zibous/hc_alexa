@@ -13,7 +13,13 @@ class AlexaProcessor:
         directive = payload.get("directive", {})
         header = directive.get("header", {})
         namespace = header.get("namespace")
-        
+
+        # Endpoint-ID normalisieren
+        endpoint = directive.get("endpoint", {})
+        if "endpointId" in endpoint:
+            # switch#panasonic_mikrowelle → switch.panasonic_mikrowelle
+            endpoint["endpointId"] = endpoint["endpointId"].replace("#", ".")
+
         devices = load_devices()
 
         # 1. Geräte-Erkennung

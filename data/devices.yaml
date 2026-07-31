@@ -8,7 +8,7 @@
 # ──────────────────────────────────────────────
 # Rollläden (Shelly HTTP)
 # ──────────────────────────────────────────────
-- id: rollladen_kueche
+- id: cover.rollladen_kueche
   name: "Rollladen Küche"
   type: roller
   category: INTERIOR_BLIND
@@ -17,7 +17,7 @@
   channel: "0"
   hardware: Shelly 2PM
 
-- id: rollladen_schlafzimmer
+- id: cover.rollladen_schlafzimmer
   name: "Rollladen Schlafzimmer"
   type: roller
   category: INTERIOR_BLIND
@@ -26,7 +26,7 @@
   channel: "0"
   hardware: Shelly 2PM
 
-- id: rollladen_wohnzimmer_nord
+- id: cover.rollladen_wohnzimmer_nord
   name: "Rollladen Wohnzimmer Nord"
   type: roller
   category: INTERIOR_BLIND
@@ -35,7 +35,7 @@
   channel: "0"
   hardware: Shelly 2PM
 
-- id: rollladen_wohnzimmer_sued
+- id: cover.rollladen_wohnzimmer_sued
   name: "Rollladen Wohnzimmer Süd"
   type: roller
   category: INTERIOR_BLIND
@@ -47,7 +47,7 @@
 # ──────────────────────────────────────────────
 # Temperatursensoren (Zigbee2MQTT)
 # ──────────────────────────────────────────────
-- id: weather_outnorth_temperature
+- id: sensor.weather_outnorth_temperature
   name: "Temperatur Nordseite"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -55,7 +55,7 @@
   topic_id: weather-outnorth
   hardware: Aqara Temperatursensor
 
-- id: weather_heizraum_temperature
+- id: sensor.weather_heizraum_temperature
   name: "Temperatur Heizraum"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -63,7 +63,7 @@
   topic_id: weather-heizraum
   hardware: Aqara Temperatursensor
 
-- id: weather_flur_temperature
+- id: sensor.weather_flur_temperature
   name: "Temperatur Eingang"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -71,7 +71,7 @@
   topic_id: weather-flur
   hardware: Aqara Temperatursensor
 
-- id: vorratsraum_temperatur
+- id: sensor.vorratsraum_temperatur
   name: "Temperatur Vorratsraum"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -79,7 +79,7 @@
   topic_id: weather-sonoff1
   hardware: Sonoff Temperatursensor
 
-- id: temp_sensor_temperature_buro
+- id: sensor.temp_sensor_temperature_buro
   name: "Temperatur Büro"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -87,7 +87,7 @@
   topic_id: weather-sonoff3
   hardware: BTHome Xiaomi
 
-- id: weather_wc_temperature
+- id: sensor.weather_wc_temperature
   name: "Temperatur Gäste WC"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -95,7 +95,7 @@
   topic_id: weather-wc
   hardware: Aqara Temperatursensor
 
-- id: weather_kitchen_temperature
+- id: sensor.weather_kitchen_temperature
   name: "Temperatur Küche"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -103,7 +103,7 @@
   topic_id: weather-kitchen
   hardware: Aqara Temperatursensor
 
-- id: weather_bad_temperature
+- id: sensor.weather_bad_temperature
   name: "Temperatur Bad"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -111,7 +111,7 @@
   topic_id: weather-bad
   hardware: Aqara Temperatursensor
 
-- id: weather_bedroom_temperature
+- id: sensor.weather_bedroom_temperature
   name: "Temperatur Schlafzimmer"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -119,7 +119,7 @@
   topic_id: weather-bedroom
   hardware: Aqara Temperatursensor
 
-- id: weather_kz1_temperature
+- id: sensor.weather_kz1_temperature
   name: "Temperatur Gästezimmer 1"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -127,7 +127,7 @@
   topic_id: weather-kz1
   hardware: Aqara Temperatursensor
 
-- id: weather_kz2_temperature
+- id: sensor.weather_kz2_temperature
   name: "Temperatur Gästezimmer 2"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -138,7 +138,7 @@
 # ──────────────────────────────────────────────
 # Heizungsthermostate (Zigbee2MQTT)
 # ──────────────────────────────────────────────
-- id: thermostat_bad
+- id: climate.thermostat_bad
   name: "Heizung Bad"
   type: thermostat
   category: THERMOSTAT
@@ -146,7 +146,7 @@
   topic_id: thermostat-bad
   hardware: Hama Zigbee Thermostat
 
-- id: thermostat_fitnessraum
+- id: climate.thermostat_fitnessraum
   name: "Heizung Fitnessraum 1"
   type: thermostat
   category: THERMOSTAT
@@ -154,7 +154,7 @@
   topic_id: thermostat-fitnessraum
   hardware: Hama Zigbee Thermostat
 
-- id: thermostat_fitnessraum2
+- id: climate.thermostat_fitnessraum2
   name: "Heizung Fitnessraum 2"
   type: thermostat
   category: THERMOSTAT
@@ -162,7 +162,7 @@
   topic_id: thermostat-fitnessraum2
   hardware: Hama Zigbee Thermostat
 
-- id: thermostat_fitnessraum3
+- id: climate.thermostat_fitnessraum3
   name: "Heizung Fitnessraum 3"
   type: thermostat
   category: THERMOSTAT
@@ -170,7 +170,7 @@
   topic_id: thermostat-fitnessraum3
   hardware: Hama Zigbee Thermostat
 
-- id: thermostat_kinderzimmer1
+- id: climate.thermostat_kinderzimmer1
   name: "Heizung Gästezimmer 1"
   type: thermostat
   category: THERMOSTAT
@@ -178,7 +178,7 @@
   topic_id: thermostat-kinderzimmer1
   hardware: Hama Zigbee Thermostat
 
-- id: thermostat_kinderzimmer2
+- id: climate.thermostat_kinderzimmer2
   name: "Heizung Gästezimmer 2"
   type: thermostat
   category: THERMOSTAT
@@ -186,7 +186,7 @@
   topic_id: thermostat-kinderzimmer2
   hardware: Hama Zigbee Thermostat
 
-- id: thermostat_kitchen
+- id: climate.thermostat_kitchen
   name: "Heizung Küche"
   type: thermostat
   category: THERMOSTAT
@@ -194,7 +194,7 @@
   topic_id: thermostat-kitchen
   hardware: Hama Zigbee Thermostat
 
-- id: thermostat_office
+- id: climate.thermostat_office
   name: "Heizung Büro"
   type: thermostat
   category: THERMOSTAT
@@ -202,7 +202,7 @@
   topic_id: thermostat-office
   hardware: Hama Zigbee Thermostat
 
-- id: thermostat_schlafzimmer
+- id: climate.thermostat_schlafzimmer
   name: "Heizung Schlafzimmer"
   type: thermostat
   category: THERMOSTAT
@@ -210,7 +210,7 @@
   topic_id: thermostat-schlafzimmer
   hardware: Hama Zigbee Thermostat
 
-- id: thermostat_hauseingang
+- id: climate.thermostat_hauseingang
   name: "Heizung Hauseingang"
   type: thermostat
   category: THERMOSTAT
@@ -218,7 +218,7 @@
   topic_id: thermostat-hauseingang
   hardware: Hama Zigbee Thermostat
 
-- id: thermostat_wc
+- id: climate.thermostat_wc
   name: "Heizung Gäste WC"
   type: thermostat
   category: THERMOSTAT
@@ -226,7 +226,7 @@
   topic_id: thermostat-wc
   hardware: Hama Zigbee Thermostat
 
-- id: thermostat_wohnzimmer1
+- id: climate.thermostat_wohnzimmer1
   name: "Heizung Wohnzimmer Nord"
   type: thermostat
   category: THERMOSTAT
@@ -234,7 +234,7 @@
   topic_id: thermostat-wohnzimmer1
   hardware: Hama Zigbee Thermostat
 
-- id: thermostat_wohnzimmer2
+- id: climate.thermostat_wohnzimmer2
   name: "Heizung Wohnzimmer Süd"
   type: thermostat
   category: THERMOSTAT
@@ -245,7 +245,7 @@
 # ──────────────────────────────────────────────
 # Lichter
 # ──────────────────────────────────────────────
-- id: lichtdimmer_kueche
+- id: light.lichtdimmer_kueche
   name: "Tisch Licht Küche"
   type: dimmer
   category: LIGHT
@@ -254,7 +254,7 @@
   channel: "0"
   hardware: Shelly Dimmer
 
-- id: rgb_fernseherlicht
+- id: light.rgb_fernseherlicht
   name: "Wohnzimmer Fernsehlicht"
   type: light
   category: LIGHT
@@ -262,7 +262,7 @@
   topic_id: rgb-fernseherlicht
   hardware: Zigbee RGB Strip
 
-- id: officelight
+- id: switch.officelight
   name: "Bürolicht"
   type: switch
   category: LIGHT
@@ -271,7 +271,7 @@
   channel: "0"
   hardware: Shelly 1
 
-- id: wintergartenlicht
+- id: switch.wintergartenlicht
   name: "Wintergartenlicht"
   type: switch
   category: LIGHT
@@ -283,7 +283,7 @@
 # ──────────────────────────────────────────────
 # Schalter (Shelly HTTP)
 # ──────────────────────────────────────────────
-- id: wasserbrunnen
+- id: switch.wasserbrunnen
   name: "Gartenbrunnen"
   type: switch
   category: SWITCH
@@ -292,7 +292,7 @@
   channel: "0"
   hardware: Shelly Plus 1PM
 
-- id: hausanschluss
+- id: switch.hausanschluss
   name: "Überschuss Steuerung"
   type: switch
   category: SWITCH
@@ -301,8 +301,8 @@
   channel: "0"
   hardware: Shelly 3EM
 
-- id: panasonic_mikrowelle
-  name: "Panasoinic Mikrowelle"
+- id: switch.panasonic_mikrowelle
+  name: "Mikrowelle"
   type: switch
   category: SWITCH
   protocol: shelly
@@ -310,7 +310,7 @@
   channel: "0"
   hardware: Shelly Plus 1PM
 
-- id: mediaswitch_switch_0
+- id: switch.mediaswitch_switch_0
   name: "Fernsehanlage"
   type: switch
   category: SWITCH
@@ -319,7 +319,7 @@
   channel: "0"
   hardware: Shelly 1
 
-- id: waschmaschine
+- id: switch.waschmaschine
   name: "Waschmaschine"
   type: switch
   category: SWITCH
@@ -333,7 +333,7 @@
 # http://10.1.1.49/switch/t_roffner
 # {"id":"switch-t_roffner","value":false,"state":"OFF"}
 # ──────────────────────────────────────────────
-- id: turoffner
+- id: switch.turoffner
   name: "Türöffner"
   type: switch
   category: SWITCH
@@ -346,7 +346,7 @@
 # ──────────────────────────────────────────────
 # Sensoren (ESPHome HTTP API)
 # ──────────────────────────────────────────────
-- id: heizung_warmwasser
+- id: sensor.heizung_warmwasser
   name: "Warmwasser Anzeige"
   type: sensor
   category: SENSOR
@@ -360,7 +360,7 @@
 # ──────────────────────────────────────────────
 # Sensoren (MQTT generisch – Tasmota etc.)
 # ──────────────────────────────────────────────
-- id: thc101_temperature
+- id: sensor.thc101_temperature
   name: "Temperatur Dachgeschoss"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -370,7 +370,7 @@
   value_path: "SonoffSC.Temperature"
   hardware: SonoffSC Tasmota
 
-- id: ecowit_wz_temperature
+- id: sensor.weather_wohnzimmer_temperatur
   name: "Temperatur Wohnzimmer"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -379,7 +379,7 @@
   value_path: "indoortempc"
   hardware: Sanilogic WS3500Ecowit
 
-- id: ecowit_garten_temp
+- id: sensor.weather_garten_temperatur
   name: "Temperatur Garten"
   type: sensor
   category: TEMPERATURE_SENSOR
@@ -391,7 +391,7 @@
 # ──────────────────────────────────────────────
 # Schalter (MQTT generisch – Tasmota)
 # ──────────────────────────────────────────────
-- id: christbaum
+- id: switch.christbaum
   name: "Christbaumlicht"
   type: switch
   category: SWITCH
@@ -402,7 +402,7 @@
   value_path: "POWER"
   hardware: Sonoff Switch Tasmota
 
-- id: wzlicht2
+- id: switch.wzlicht2
   name: "Wohnzimmer LED LICHT 2"
   type: switch
   category: SWITCH
@@ -415,7 +415,7 @@
 
 # wzlicht1
 
-- id: trockner
+- id: switch.trockner
   name: "Wäschetrockner"
   type: switch
   category: SWITCH
@@ -426,7 +426,7 @@
   value_path: "POWER"
   hardware: Sonoff Switch Tasmota
 
-- id: office4ch_drucker
+- id: switch.drucker
   name: "Drucker"
   type: switch
   category: SWITCH
@@ -436,7 +436,7 @@
   topic: "cmnd/office4ch/POWER1"
   hardware: Sonoff 4CH Tasmota
 
-- id: office4ch_lenovo
+- id: switch.lenovo
   name: "Lenovo"
   type: switch
   category: SWITCH
@@ -446,7 +446,7 @@
   topic: "cmnd/office4ch/POWER2"
   hardware: Sonoff 4CH Tasmota
 
-- id: office4ch_zbox
+- id: switch.zbox
   name: "Zbox"
   type: switch
   category: SWITCH
@@ -456,7 +456,7 @@
   topic: "cmnd/office4ch/POWER3"
   hardware: Sonoff 4CH Tasmota
 
-- id: office4ch_windowspc
+- id: switch.windowspc
   name: "Windows PC"
   type: switch
   category: SWITCH

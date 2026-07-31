@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     # Zigbee2MQTT
     Z2M_TOPIC_BASE: str = Field(default="zigbee2mqtt")
 
+    # OAuth (Alexa Account Linking)
+    OAUTH_CLIENT_ID: str = Field(default="alexa-smarthome")
+    OAUTH_TOKEN: str = Field(default="smarthome-alexa-token-2026")
+
     # Pfade
     DEVICES_YAML_PATH: str = Field(default="data/devices.yaml")
 

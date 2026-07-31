@@ -52,6 +52,7 @@ Nginx startet ➡️ Home-Assistant-Alexa-Skript.
 
 1. **Öffentliche HTTPS-URL:** Home Assistant muss extern über HTTPS erreichbar sein (z. B. via DuckDNS + Nginx).
 2. **Nginx-Konfiguration:** Die`location`-Blöcke müssen in Nginx aktiv und fehlerfrei geladen sein.
+
 3. **Accounts:**
    * Amazon Developer Account (kostenlos) -> [://amazon.com](https://developer.amazon.com/alexa/console/ask)
    * AWS Web Services Account (kostenlos / Free Tier) -> [://amazon.com](https://aws.amazon.com)

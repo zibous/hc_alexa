@@ -55,9 +55,12 @@ docker-compose.override.yml
 # -----------------------------------------------
 build/
 dist/
+aws/
 fehler.txt
 scripts/xml/
 discovery.json
+ha_discovery.json
+hc_discovery.json
 frontend/static/js/*.bundle.js
 frontend/static/js/*.bundle.js.map
 frontend/static/css/*.bundle.css

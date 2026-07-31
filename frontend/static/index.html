@@ -7,13 +7,40 @@
     <title>Smart Home Dashboard</title>
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2'%3E%3Cpath d='m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.bundle.css">
 </head>
 
 <body>
     <header class="header">
-        <h1>Smart Home</h1>
-        <span class="header-status" id="headerStatus">Verbinde...</span>
+        <div class="header-left">
+            <div class="header-title">
+                <h1><span style="color:var(--accent)">ALEXA Smart</span><span style="color:var(--green)">Home</span>
+                </h1>
+                <div class="header-subtitle">Alexa · Shelly · Zigbee · MQTT</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="header-bg-icon">
+                <svg viewBox="0 0 200 60"
+                    style="width:auto;height:50px;opacity:.4;stroke:currentColor;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round">
+                    <!-- Haus -->
+                    <path d="M20 35 L35 22 L50 35 L50 50 L20 50 Z" />
+                    <rect x="30" y="38" width="10" height="12" />
+                    <!-- Wellen (Funk) -->
+                    <path d="M60 30 Q70 25 80 30 Q90 35 100 30" stroke-width="2" />
+                    <path d="M60 38 Q70 33 80 38 Q90 43 100 38" stroke-width="2" />
+                    <!-- Alexa Echo -->
+                    <rect x="110" y="25" width="16" height="28" rx="8" />
+                    <circle cx="118" cy="30" r="3" fill="currentColor" opacity=".3" />
+                    <!-- Blitz -->
+                    <path d="M145 25 L155 25 L150 35 L158 35 L142 52 L148 38 L140 38 Z" fill="currentColor" opacity=".2"
+                        stroke="none" />
+                    <!-- Zigbee -->
+                    <path d="M170 28 L185 28 L170 45 L185 45" stroke-width="2.5" />
+                </svg>
+            </div>
+            <div class="header-status" id="headerStatus">Verbinde...</div>
+        </div>
     </header>
 
     <main class="container">
@@ -27,9 +54,9 @@
     </footer>
 
     <!-- DEV: Module (kein Bundle nötig) -->
-    <script type="module" src="js/app.js"></script>
+    <!-- <script type="module" src="js/app.js"></script> -->
     <!-- PROD: Bundle (make jsbuild) -->
-    <!-- <script type="module" src="js/app.bundle.js"></script> -->
+    <script type="module" src="js/app.bundle.js"></script>
 </body>
 
 </html>

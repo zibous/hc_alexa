@@ -142,6 +142,23 @@ git-release: git-status ## Neues Versions-Tag automatisch berechnen, erstellen u
 	echo "🎉 Version $$NEXT_TAG erfolgreich an Forgejo übermittelt!"
 
 
+ha-discovery: ## HA Alexa Discovery simulieren (Geräteliste)
+	curl -s -X POST http://10.1.1.219:8123/api/alexa/smart_home \
+	-H "Content-Type: application/json" \
+	-H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhNzc1ODMzNjdhODE0ZTE3OGUyNjlkODdiNjViOGZlMyIsImlhdCI6MTcxMjgxNzcyNiwiZXhwIjoyMDI4MTc3NzI2fQ.weD7tsp6SpYGCBhXGtfyFcWO2Cx_F3WhnpE3N1qAE-g" \
+	-d '{"directive":{"header":{"namespace":"Alexa.Discovery","name":"Discover","payloadVersion":"3","messageId":"test"},"payload":{}}}' \
+	| python3 -m json.tool > ha_discovery.json
+
+hc-discovery:
+	curl -s -X POST http://10.1.1.119:5018/api/alexa/smart_home \
+	-H "Content-Type: application/json" \
+	-d '{"directive":{"header":{"namespace":"Alexa.Discovery","name":"Discover","payloadVersion":"3","messageId":"test"},"payload":{}}}' \
+	| python3 -m json.tool > hc_discovery.json
+
+compare-discovery:
+	diff <(python3 -c "import json; [print(e['endpointId']) for e in json.load(open('ha_discovery.json'))['event']['payload']['endpoints']]" | sort) <(python3 -c "import json; [print(e['endpointId']) for e in json.load(open('hc_discovery.json'))['event']['payload']['endpoints']]" | sort)
+
+
 # --- TEST BEFEHLE (simuliert AWS Lambda → FastAPI) ---
 HOST := 10.1.1.119
 PORT := 5018
