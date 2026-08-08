@@ -4,9 +4,10 @@ import logging
 import threading
 import uuid
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Any
 
 import paho.mqtt.client as mqtt
+from paho.mqtt.enums import CallbackAPIVersion  # type: ignore[reportPrivateImportUsage]
 
 from app.config.settings import settings
 
@@ -81,7 +82,7 @@ class StatusCache:
             logger.error("StatusCache: Config-Parsing fehlgeschlagen: %s", e)
 
     def _parse_state(self):
-        """Lädt state.json und befüllt den Cache mit friendly_name als Key."""
+        """Lädt state.json und befüllt den Cache with friendly_name als Key."""
         if not Z2M_STATE_FILE.exists():
             logger.warning("StatusCache: %s nicht gefunden", Z2M_STATE_FILE)
             return
@@ -103,7 +104,7 @@ class StatusCache:
         """Startet MQTT-Client für Live-Updates im Hintergrund."""
         client_id = f"hc_alexa_{uuid.uuid4().hex[:6]}"
         self._client = mqtt.Client(
-            callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
+            callback_api_version=CallbackAPIVersion.VERSION2,
             client_id=client_id,
             protocol=mqtt.MQTTv311,
         )
@@ -119,8 +120,9 @@ class StatusCache:
         except Exception as e:
             logger.error("StatusCache: MQTT Connect fehlgeschlagen: %s", e)
 
-    def _on_connect(self, client, userdata, flags, rc, properties=None):
-        if rc == 0:
+    def _on_connect(self, client: mqtt.Client, userdata: Any, flags: Any, reason_code: Any, properties: Any = None):
+        # Paho v2 nutzt reason_code anstelle von rc. Bei Erfolg ist reason_code.is_failure False oder reason_code == 0
+        if reason_code == 0:
             # Z2M Topics
             z2m_topic = f"{settings.Z2M_TOPIC_BASE}/#"
             client.subscribe(z2m_topic)
@@ -128,9 +130,9 @@ class StatusCache:
             self._subscribe_custom_topics(client)
             logger.info("StatusCache: MQTT verbunden, subscribed auf %s + custom topics", z2m_topic)
         else:
-            logger.error("StatusCache: MQTT Connect fehlgeschlagen (rc=%s)", rc)
+            logger.error("StatusCache: MQTT Connect fehlgeschlagen (reason_code=%s)", reason_code)
 
-    def _subscribe_custom_topics(self, client):
+    def _subscribe_custom_topics(self, client: mqtt.Client):
         """Subscribed auf alle topic_ids die nicht z2m sind."""
         from app.core.device_loader import load_devices
         for d in load_devices():
@@ -138,7 +140,7 @@ class StatusCache:
                 client.subscribe(d.topic_id)
                 logger.debug("StatusCache: Custom subscribe → %s", d.topic_id)
 
-    def _on_message(self, client, userdata, msg):
+    def _on_message(self, client: mqtt.Client, userdata: Any, msg: mqtt.MQTTMessage):
         topic = msg.topic
 
         # Z2M: conbee2mqtt/{device}
@@ -174,12 +176,12 @@ class StatusCache:
                         self._notify_change_report(topic, payload["temperature"])
             self._msg_count += 1
 
-            if self._msg_count <= 5 or self._msg_count % 20 == 0:
-                logger.info("StatusCache: MQTT %s (total: %d)", topic, self._msg_count)
+            if self._msg_count <= 5 or self._msg_count % 100 == 0:
+                logger.info("StatusCache: MQTT msg count: %d (last: %s)", self._msg_count, topic)
         except (json.JSONDecodeError, UnicodeDecodeError):
             pass
 
-    def _notify_change_report(self, topic_id: str, temperature):
+    def _notify_change_report(self, topic_id: str, temperature: Any):
         """Benachrichtigt den ChangeReport-Service über Temperaturänderungen."""
         try:
             from app.core.device_loader import load_devices

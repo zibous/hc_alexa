@@ -7,7 +7,6 @@ import httpx
 from app.models.device import DeviceConfig
 from app.infrastructure.status_cache import StatusCache
 from app.processor.helpers import get_utc_timestamp
-from app.config.settings import settings
 
 logger = logging.getLogger(__name__)
 

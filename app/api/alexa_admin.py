@@ -1,5 +1,4 @@
 # app/api/alexa_admin.py – Admin-Endpunkte für Alexa Geräte-Management
-import json
 import logging
 from typing import Optional
 

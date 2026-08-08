@@ -22,7 +22,12 @@ async def handle_alexa_smart_home(request: Request):
     namespace = header.get("namespace", "?")
     name = header.get("name", "?")
     endpoint_id = directive.get("endpoint", {}).get("endpointId", "–")
-    logger.info("ALEXA REQUEST: %s.%s → %s", namespace, name, endpoint_id)
+
+    # ReportState ist Routine-Polling → nur DEBUG
+    if namespace == "Alexa" and name == "ReportState":
+        logger.debug("ALEXA REQUEST: %s.%s → %s", namespace, name, endpoint_id)
+    else:
+        logger.info("ALEXA REQUEST: %s.%s → %s", namespace, name, endpoint_id)
 
     # Zugriff loggen
     AccessLog.get().log_access(namespace, endpoint_id)
@@ -40,18 +45,17 @@ async def handle_alexa_smart_home(request: Request):
 
     response = await processor.process_request(payload)
 
-    # StateReport Response loggen für Debugging
+    # StateReport Response loggen für Debugging (nur DEBUG)
     if namespace == "Alexa" and name == "ReportState":
         props = response.get("context", {}).get("properties", [])
         resp_name = response.get("event", {}).get("header", {}).get("name", "?")
-        logger.info("STATEREPORT RESPONSE [%s] header=%s props=%s", endpoint_id, resp_name, json.dumps(props)[:300])
+        logger.debug("STATEREPORT RESPONSE [%s] header=%s props=%s", endpoint_id, resp_name, json.dumps(props)[:300])
 
     # Bei Discovery: Endpoint-IDs und Payload loggen
     if namespace == "Alexa.Discovery":
         endpoints = response.get("event", {}).get("payload", {}).get("endpoints", [])
         ids = [e["endpointId"] for e in endpoints]
         logger.info("DISCOVERY RESPONSE: %d Geräte → %s", len(ids), ids[:5])
-        # Request-Payload loggen für Debugging
         logger.info("DISCOVERY REQUEST PAYLOAD: %s", json.dumps(directive.get("payload", {}))[:200])
 
     return response

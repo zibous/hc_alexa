@@ -8,9 +8,9 @@ services:
     environment:
       - TZ=Europe/Berlin
     volumes:
-      - ${PWD}/data:/app/data
-      - ${PWD}/logs:/app/logs
-      - ${PWD}/frontend:/app/frontend
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./frontend:/app/frontend
     ports:
       - "5018:5018"
     healthcheck:

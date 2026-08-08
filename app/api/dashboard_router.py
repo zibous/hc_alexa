@@ -71,7 +71,6 @@ async def get_devices():
     result = []
 
     # Shelly + ESPHome Status parallel abfragen
-    import asyncio
     http_tasks = {}
     for d in devices:
         if d.protocol == "shelly" and d.ip:

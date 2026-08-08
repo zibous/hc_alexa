@@ -4,6 +4,7 @@ import logging
 import threading
 
 import paho.mqtt.client as mqtt
+from paho.mqtt.enums import CallbackAPIVersion  # type: ignore[reportPrivateImportUsage]
 
 from app.config.settings import settings
 
@@ -17,7 +18,11 @@ class MqttClient:
     _lock = threading.Lock()
 
     def __init__(self):
-        self._client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1, client_id="hc_alexa_publish")
+        self._client = mqtt.Client(
+            callback_api_version=CallbackAPIVersion.VERSION2,
+            client_id="hc_alexa_publish",
+            protocol=mqtt.MQTTv311,
+        )
         self._connected = False
 
         if settings.MQTT_USER:
@@ -59,14 +64,14 @@ class MqttClient:
         except Exception as e:
             logger.error("MQTT Connect fehlgeschlagen: %s", e)
 
-    def _on_connect(self, client, userdata, flags, rc):
-        if rc == 0:
+    def _on_connect(self, client, userdata, flags, reason_code, properties=None):
+        if reason_code == 0:
             self._connected = True
             logger.info("MQTT verbunden: %s:%d", settings.MQTT_HOST, settings.MQTT_PORT)
         else:
-            logger.error("MQTT Verbindung fehlgeschlagen (rc=%d)", rc)
+            logger.error("MQTT Verbindung fehlgeschlagen (reason_code=%s)", reason_code)
 
-    def _on_disconnect(self, client, userdata, rc):
+    def _on_disconnect(self, client, userdata, flags, reason_code, properties=None):
         self._connected = False
-        if rc != 0:
-            logger.warning("MQTT Verbindung verloren (rc=%d), Reconnect...", rc)
+        if reason_code != 0:
+            logger.warning("MQTT Verbindung verloren (reason_code=%s), Reconnect...", reason_code)

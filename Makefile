@@ -13,8 +13,10 @@ SHELL := /bin/bash
 .PHONY: build up down
 
 .PHONY: up down restart build logs test-discovery test-power-on test-power-off test-roller test-health
- 
+
  VERSION := $(shell git describe --tags --always)
+
+ PYTHON_FILES := $(wildcard *.py) $(wildcard app/*.py)
 
 # ---------------------------------------------------------
 # Lokales Ausführen (Dev ohne Docker)
@@ -22,6 +24,17 @@ SHELL := /bin/bash
 dev: ## Startet lokal mit auto-reload (ohne Docker)
 	@echo "Starte Dev-Server: http://10.1.1.119:5018/dashboard/"
 	@PYTHONPATH=$(CURDIR) python3 -m uvicorn app.main:app --host 0.0.0.0 --port 5018 --reload
+
+# 1. AST-Syntax-Check für alle Python-Dateien
+check-syntax:
+	@echo "🔍 Starte AST-Syntax-Check..."
+	@for file in $(PYTHON_FILES); do \
+		echo "   Prüfe $$file..."; \
+		python3 -c "import ast; ast.parse(open('$$file').read())" || exit 1; \
+	 eagle_flag=1; \
+	done
+	@echo "✔ Alle Python-Dateien sind syntaktisch korrekt (AST)."
+
 
 # ---------------------------------------------------------
 # Docker
@@ -55,6 +68,7 @@ restart: sync-z2m ## Restart containers (mit Z2M-Sync)
 
 rebuild: sync-z2m ## Rebuild and restart (no cache)
 	docker compose down
+	@rm -f logs/app.log logs/app.log.*
 	docker compose build --no-cache
 	docker compose up -d --force-recreate
 
@@ -101,17 +115,6 @@ jsclean: ## 🔧 Komprimiert JS und CSS entfernen
 	@rm -f frontend/static/css/style.bundle.css.map
 	@echo "✨ Verzeichnis ist wieder sauber."
 
-git-status: ## Zeigt die aktuelle Forgejo Server-Verbindung (Remote URL) an
-	@echo "🔍 Überprüfe Git-Remote-Konfiguration..."
-	@if ! git remote get-url origin >/dev/null 2>&1; then \
-		echo "❌ Fehler: 'origin' ist noch nicht eingerichtet!"; \
-		echo "👉 Bitte führe aus: make git-setup"; \
-		exit 1; \
-	fi
-	@URL=$$(git remote get-url origin); \
-	echo "🍏 Forgejo-Server ist aktiv verbunden!" ; \
-	echo "🔗 Aktuelle URL: $$URL"
-
 git-setup: ## Git-Verbindung zum Forgejo-Server automatisch einrichten oder korrigieren
 	@echo "🛠️ Initialisiere Forgejo Server-Verbindung für '$(PROJECT_NAME)'..."
 	@if ! git remote get-url origin >/dev/null 2>&1; then \
@@ -122,6 +125,17 @@ git-setup: ## Git-Verbindung zum Forgejo-Server automatisch einrichten oder korr
 		echo "🔄 Bestehende Server-URL erfolgreich korrigiert!"; \
 	fi
 	@echo "🔗 Ziel-Adresse: $(FORGEJO_URL)"
+
+git-status: ## Zeigt die aktuelle Forgejo Server-Verbindung (Remote URL) an
+	@echo "🔍 Überprüfe Git-Remote-Konfiguration..."
+	@if ! git remote get-url origin >/dev/null 2>&1; then \
+		echo "❌ Fehler: 'origin' ist noch nicht eingerichtet!"; \
+		echo "👉 Bitte führe aus: make git-setup"; \
+		exit 1; \
+	fi
+	@URL=$$(git remote get-url origin); \
+	echo "🍏 Forgejo-Server ist aktiv verbunden!" ; \
+	echo "🔗 Aktuelle URL: $$URL"
 
 git-update: git-status ## Git Forgejo Update durchführen (Normaler Zwischenstand)
 	git add -A
@@ -140,7 +154,6 @@ git-release: git-status ## Neues Versions-Tag automatisch berechnen, erstellen u
 	git tag -a $$NEXT_TAG -m "Automatisches Release $$NEXT_TAG am $$(date +'%Y-%m-%d %H:%M') via Makefile"; \
 	git push origin $$NEXT_TAG; \
 	echo "🎉 Version $$NEXT_TAG erfolgreich an Forgejo übermittelt!"
-
 
 ha-discovery: ## HA Alexa Discovery simulieren (Geräteliste)
 	curl -s -X POST http://10.1.1.219:8123/api/alexa/smart_home \
