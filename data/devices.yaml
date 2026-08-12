@@ -470,3 +470,29 @@
   topic_id: "stat/office4ch/POWER4"
   topic: "cmnd/office4ch/POWER4"
   hardware: Sonoff 4CH Tasmota
+
+# ──────────────────────────────────────────────
+# Klimaanlage (Midea/Comfee via LAN)
+# ──────────────────────────────────────────────
+- id: climate.klimaanlage_wohnzimmer
+  name: "Klimaanlage"
+  type: thermostat
+  category: THERMOSTAT
+  protocol: midea
+  ip: "10.1.1.113"
+  device_id: "152832117330380"
+  token: "${COMFEE_TOKEN}"
+  key: "${COMFEE_KEY}"
+  hardware: Comfee Breezy Cool Pro 2.6
+
+# ──────────────────────────────────────────────
+# Luftreiniger (Xiaomi MIoT via LAN)
+# ──────────────────────────────────────────────
+- id: switch.luftreiniger_wohnzimmer
+  name: "Luftreiniger"
+  type: purifier
+  category: SWITCH
+  protocol: miio
+  ip: "10.1.1.130"
+  token: "${PURIFIER_TOKEN}"
+  hardware: Xiaomi Mi Air Purifier 3C

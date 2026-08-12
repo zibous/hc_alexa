@@ -52,6 +52,9 @@ class DiscoveryHandler:
             caps.append(self._power_controller())
             caps.append(self._contact_sensor())
 
+        elif d.type == "purifier":
+            caps.append(self._power_controller())
+
         elif d.type in ("dimmer", "light"):
             caps.append(self._power_controller())
             caps.append(self._brightness_controller())
@@ -59,6 +62,11 @@ class DiscoveryHandler:
         elif d.type == "roller":
             caps.append(self._power_controller())
             caps.append(self._range_controller_cover())
+
+        elif d.type == "thermostat" and d.protocol == "midea":
+            caps.append(self._power_controller())
+            caps.append(self._thermostat_controller_ac())
+            caps.append(self._temperature_sensor())
 
         elif d.type == "thermostat":
             caps.append(self._power_controller())
@@ -137,6 +145,23 @@ class DiscoveryHandler:
             "configuration": {
                 "supportsScheduling": False,
                 "supportedModes": ["OFF", "HEAT", "AUTO"],
+            },
+        }
+
+    def _thermostat_controller_ac(self) -> dict:
+        """Thermostat-Controller für Klimaanlagen (nur Kühlen)."""
+        return {
+            "type": "AlexaInterface",
+            "interface": "Alexa.ThermostatController",
+            "version": "3",
+            "properties": {
+                "supported": [{"name": "thermostatMode"}, {"name": "targetSetpoint"}],
+                "proactivelyReported": False,
+                "retrievable": True,
+            },
+            "configuration": {
+                "supportsScheduling": False,
+                "supportedModes": ["OFF", "COOL"],
             },
         }
 

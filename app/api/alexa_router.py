@@ -23,9 +23,9 @@ async def handle_alexa_smart_home(request: Request):
     name = header.get("name", "?")
     endpoint_id = directive.get("endpoint", {}).get("endpointId", "–")
 
-    # ReportState ist Routine-Polling → nur DEBUG
+    # ReportState ist Routine-Polling → INFO für Midea-Debug
     if namespace == "Alexa" and name == "ReportState":
-        logger.debug("ALEXA REQUEST: %s.%s → %s", namespace, name, endpoint_id)
+        logger.info("ALEXA REQUEST: %s.%s → %s", namespace, name, endpoint_id)
     else:
         logger.info("ALEXA REQUEST: %s.%s → %s", namespace, name, endpoint_id)
 
@@ -45,11 +45,11 @@ async def handle_alexa_smart_home(request: Request):
 
     response = await processor.process_request(payload)
 
-    # StateReport Response loggen für Debugging (nur DEBUG)
+    # StateReport Response loggen
     if namespace == "Alexa" and name == "ReportState":
         props = response.get("context", {}).get("properties", [])
         resp_name = response.get("event", {}).get("header", {}).get("name", "?")
-        logger.debug("STATEREPORT RESPONSE [%s] header=%s props=%s", endpoint_id, resp_name, json.dumps(props)[:300])
+        logger.info("STATEREPORT RESPONSE [%s] header=%s props=%d data=%s", endpoint_id, resp_name, len(props), json.dumps(props)[:500])
 
     # Bei Discovery: Endpoint-IDs und Payload loggen
     if namespace == "Alexa.Discovery":

@@ -10,7 +10,7 @@ snap_gallery: true
 gallery: true
 categories:
   - "Smarthome"
-tags: ["docker", "python", "fastapi", "dashboard", "mqtt", "alexa", "zigbee", "shelly"]
+tags: ["docker", "python", "fastapi", "dashboard", "mqtt"]
 ---
 
 [![GITHUB: HC_ALEXA](https://img.shields.io/badge/Project-GitHub-yellow.svg)](https://github.com/zibous/hc_alexa)

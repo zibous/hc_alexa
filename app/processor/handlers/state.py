@@ -1,4 +1,5 @@
 # app/processor/handlers/state.py – Status-Abfragen für Alexa ReportState
+import asyncio
 import logging
 from typing import List
 
@@ -6,13 +7,15 @@ import httpx
 
 from app.models.device import DeviceConfig
 from app.infrastructure.status_cache import StatusCache
+from app.infrastructure.midea_client import MideaClient
+from app.infrastructure.miio_client import MiioClient
 from app.processor.helpers import get_utc_timestamp
 
 logger = logging.getLogger(__name__)
 
 
 class StateHandler:
-    def handle(self, devices: List[DeviceConfig], directive: dict, header: dict) -> dict:
+    async def handle(self, devices: List[DeviceConfig], directive: dict, header: dict) -> dict:
         endpoint_id = directive.get("endpoint", {}).get("endpointId")
         # Scope aus dem Request übernehmen (Alexa erwartet es in der Antwort)
         scope = directive.get("endpoint", {}).get("scope", {})
@@ -21,7 +24,11 @@ class StateHandler:
         properties = []
 
         if target_device:
-            properties = self._build_properties(target_device)
+            try:
+                properties = await self._build_properties(target_device)
+            except Exception as e:
+                logger.error("Status-Abfrage fehlgeschlagen [%s]: %s", target_device.id, e)
+                properties = []
 
         # Fallback: mindestens eine leere Property-Liste
         if not properties and target_device and target_device.type == "sensor":
@@ -62,8 +69,14 @@ class StateHandler:
             },
         }
 
-    def _build_properties(self, device: DeviceConfig) -> list:
+    async def _build_properties(self, device: DeviceConfig) -> list:
         """Baut die Properties je nach Gerätetyp."""
+        if device.protocol == "midea":
+            return await self._build_midea_properties(device)
+
+        if device.protocol == "miio":
+            return await self._build_miio_properties(device)
+
         if device.type == "sensor":
             temp = self._read_temperature(device)
             return [{
@@ -164,6 +177,73 @@ class StateHandler:
         except Exception as e:
             logger.error("Status-Abfrage fehlgeschlagen [%s]: %s", device.id, e)
         return 20.0
+
+    async def _build_midea_properties(self, device: DeviceConfig) -> list:
+        """Baut Alexa Properties für Midea/Comfee Klimaanlage."""
+        status = await MideaClient.get_status(device)
+        if not status:
+            return []
+
+        power_on = status.get("power_state", False)
+        target_temp = status.get("target_temperature") or 24.0
+        indoor_temp = status.get("indoor_temperature") or 20.0
+        op_mode = status.get("operational_mode", 1)
+
+        # Midea mode IDs → Alexa modes
+        # Alexa zeigt Temperatur nur bei COOL/HEAT, nicht bei AUTO
+        mode_map = {1: "COOL", 2: "COOL", 3: "COOL", 4: "HEAT", 5: "COOL"}
+        alexa_mode = mode_map.get(op_mode, "COOL")
+        if not power_on:
+            alexa_mode = "OFF"
+
+        return [
+            {
+                "namespace": "Alexa.PowerController",
+                "name": "powerState",
+                "value": "ON" if power_on else "OFF",
+                "timeOfSample": get_utc_timestamp(),
+                "uncertaintyInMilliseconds": 2000,
+            },
+            {
+                "namespace": "Alexa.ThermostatController",
+                "name": "targetSetpoint",
+                "value": {"value": float(target_temp), "scale": "CELSIUS"},
+                "timeOfSample": get_utc_timestamp(),
+                "uncertaintyInMilliseconds": 2000,
+            },
+            {
+                "namespace": "Alexa.ThermostatController",
+                "name": "thermostatMode",
+                "value": alexa_mode,
+                "timeOfSample": get_utc_timestamp(),
+                "uncertaintyInMilliseconds": 2000,
+            },
+            {
+                "namespace": "Alexa.TemperatureSensor",
+                "name": "temperature",
+                "value": {"value": float(indoor_temp), "scale": "CELSIUS"},
+                "timeOfSample": get_utc_timestamp(),
+                "uncertaintyInMilliseconds": 2000,
+            },
+        ]
+
+    async def _build_miio_properties(self, device: DeviceConfig) -> list:
+        """Baut Alexa Properties für Xiaomi MiIO Geräte (Luftreiniger)."""
+        status = await MiioClient.get_status(device)
+        if not status:
+            return []
+
+        power_on = status.get("power_state", False)
+
+        return [
+            {
+                "namespace": "Alexa.PowerController",
+                "name": "powerState",
+                "value": "ON" if power_on else "OFF",
+                "timeOfSample": get_utc_timestamp(),
+                "uncertaintyInMilliseconds": 2000,
+            },
+        ]
 
     def _read_esphome(self, device: DeviceConfig) -> float:
         """GET http://{ip}/{endpoint_status} → JSON mit 'value'."""

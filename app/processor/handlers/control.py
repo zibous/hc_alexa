@@ -6,6 +6,8 @@ import httpx
 from app.models.device import DeviceConfig
 from app.config.settings import settings
 from app.infrastructure.mqtt_client import MqttClient
+from app.infrastructure.midea_client import MideaClient
+from app.infrastructure.miio_client import MiioClient
 from app.processor.helpers import get_utc_timestamp
 
 logger = logging.getLogger(__name__)
@@ -30,8 +32,12 @@ class ControlHandler:
 
             if namespace == "Alexa.PowerController":
                 state = "ON" if name == "TurnOn" else "OFF"
-                self._send_power(target_device, state)
+                await self._send_power(target_device, state)
                 ctx.append(self._prop("Alexa.PowerController", "powerState", state))
+                # Midea: Alexa braucht auch den Thermostat-Modus im Response
+                if target_device.protocol == "midea":
+                    mode = "COOL" if state == "ON" else "OFF"
+                    ctx.append(self._prop("Alexa.ThermostatController", "thermostatMode", mode))
 
             elif namespace == "Alexa.BrightnessController":
                 brightness = directive.get("payload", {}).get("brightness")
@@ -45,12 +51,12 @@ class ControlHandler:
 
             elif namespace == "Alexa.ThermostatController" and name in ("SetTargetSetpoint", "SetTargetTemperature"):
                 temp = directive.get("payload", {}).get("targetSetpoint", {}).get("value")
-                self._send_temperature(target_device, temp)
+                await self._send_temperature(target_device, temp)
                 ctx.append(self._prop("Alexa.ThermostatController", "targetSetpoint", {"value": temp, "scale": "CELSIUS"}))
 
             elif namespace == "Alexa.ThermostatController" and name == "SetThermostatMode":
                 mode = directive.get("payload", {}).get("thermostatMode", {}).get("value", "AUTO")
-                self._send_mode(target_device, mode.lower())
+                await self._send_mode(target_device, mode.lower())
                 ctx.append(self._prop("Alexa.ThermostatController", "thermostatMode", mode))
 
             return self._response(endpoint_id, header, ctx)
@@ -61,7 +67,7 @@ class ControlHandler:
 
     # ─── Protokoll-Dispatch ──────────────────────────────
 
-    def _send_power(self, d: DeviceConfig, state: str):
+    async def _send_power(self, d: DeviceConfig, state: str):
         if d.protocol == "shelly":
             action = "on" if state == "ON" else "off"
             if d.type in ("dimmer", "light"):
@@ -76,6 +82,15 @@ class ControlHandler:
             self.mqtt.publish(f"{settings.Z2M_TOPIC_BASE}/{d.mqtt_name}/set", {"state": state})
         elif d.protocol == "mqtt":
             self.mqtt.publish(d.topic, state)
+        elif d.protocol == "midea":
+            if state == "ON":
+                # Einschalten → in den Cool-Modus versetzen
+                await MideaClient.set_mode(d, "cool")
+            else:
+                # Ausschalten
+                await MideaClient.set_mode(d, "off")
+        elif d.protocol == "miio":
+            await MiioClient.set_power(d, state == "ON")
 
     def _send_brightness(self, d: DeviceConfig, brightness: int):
         if d.protocol == "shelly":
@@ -93,13 +108,20 @@ class ControlHandler:
         elif d.protocol == "z2m":
             self.mqtt.publish(f"{settings.Z2M_TOPIC_BASE}/{d.mqtt_name}/set", {"position": position})
 
-    def _send_temperature(self, d: DeviceConfig, temp: float):
+    async def _send_temperature(self, d: DeviceConfig, temp: float):
         if d.protocol == "z2m":
             self.mqtt.publish(f"{settings.Z2M_TOPIC_BASE}/{d.mqtt_name}/set", {"current_heating_setpoint": temp})
+        elif d.protocol == "midea":
+            await MideaClient.set_temperature(d, temp)
 
-    def _send_mode(self, d: DeviceConfig, mode: str):
+    async def _send_mode(self, d: DeviceConfig, mode: str):
         if d.protocol == "z2m":
             self.mqtt.publish(f"{settings.Z2M_TOPIC_BASE}/{d.mqtt_name}/set", {"system_mode": mode})
+        elif d.protocol == "midea":
+            # Alexa modes: OFF, COOL → Midea: off, cool
+            midea_mode_map = {"off": "off", "cool": "cool", "auto": "cool", "heat": "cool"}
+            midea_mode = midea_mode_map.get(mode, "cool")
+            await MideaClient.set_mode(d, midea_mode)
 
     # ─── Response Builder ────────────────────────────────
 

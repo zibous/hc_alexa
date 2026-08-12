@@ -5,6 +5,7 @@ import { initLightEvents } from './light-card.js';
 import { initRollerDrag } from './roller-drag.js';
 import { initSwitchEvents, renderSwitch } from './switch-card.js';
 import { initThermostatEvents } from './thermo.js';
+import { renderPurifier, initPurifierEvents } from './purifier-card.js';
 
 let _actionHandler = null;
 
@@ -22,6 +23,7 @@ export function renderDevices(devices, actionHandler) {
     dimmer: 'Lichter',
     light: 'Lichter',
     switch: 'Schalter',
+    purifier: 'Luftreiniger',
   };
 
   for (const d of devices) {
@@ -44,6 +46,7 @@ export function renderDevices(devices, actionHandler) {
   initThermostatEvents(actionHandler);
   initLightEvents(actionHandler);
   initSwitchEvents(actionHandler);
+  initPurifierEvents(actionHandler);
 }
 
 function renderCard(d) {
@@ -72,6 +75,7 @@ function renderControl(d) {
     case 'thermostat': return renderThermostat(d);
     case 'sensor': return renderSensor(d);
     case 'switch': return renderSwitch(d);
+    case 'purifier': return renderPurifier(d);
     default: return '';
   }
 }

@@ -7,9 +7,9 @@ class DeviceConfig(BaseModel):
     name: str
     type: str                            # switch, dimmer, roller, thermostat, sensor, light
     category: str                        # Alexa display category
-    protocol: str                        # shelly, z2m, mqtt, esphome
+    protocol: str                        # shelly, z2m, mqtt, esphome, midea, miio
     topic_id: Optional[str] = None       # MQTT Gerätename (z2m friendly_name), falls ≠ id
-    ip: Optional[str] = None             # Bei shelly + esphome
+    ip: Optional[str] = None             # Bei shelly + esphome + midea + miio
     channel: Optional[str] = "0"         # Bei shelly
     topic: Optional[str] = None          # Bei mqtt (vollständiges custom topic)
     endpoint_on: Optional[str] = None    # Bei esphome
@@ -19,6 +19,10 @@ class DeviceConfig(BaseModel):
     unit: Optional[str] = None           # Einheit für Anzeige (z.B. "m³", "°C")
     alexa: bool = True                   # False = nur Dashboard, nicht in Alexa Discovery
     hardware: str = ""
+    # Midea/Comfee spezifisch
+    device_id: Optional[str] = None      # Midea device ID
+    token: Optional[str] = None          # Auth-Token (midea + miio)
+    key: Optional[str] = None            # Auth-Key (midea)
 
     @property
     def mqtt_name(self) -> str:

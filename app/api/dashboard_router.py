@@ -9,6 +9,8 @@ from app.core.device_loader import load_devices
 from app.config.settings import settings
 from app.infrastructure.mqtt_client import MqttClient
 from app.infrastructure.status_cache import StatusCache
+from app.infrastructure.midea_client import MideaClient
+from app.infrastructure.miio_client import MiioClient
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api")
@@ -62,6 +64,47 @@ async def _shelly_status(ip: str, channel: str, device_type: str) -> dict:
         return {}
 
 
+async def _midea_status(device) -> dict:
+    """Holt Status der Midea/Comfee Klimaanlage."""
+    try:
+        status = await MideaClient.get_status(device)
+        if not status:
+            return {}
+        power_on = status.get("power_state", False)
+        op_mode = status.get("operational_mode", 1)
+        mode_map = {1: "auto", 2: "cool", 3: "dry", 4: "heat", 5: "fan"}
+        system_mode = mode_map.get(op_mode, "auto")
+        if not power_on:
+            system_mode = "off"
+        return {
+            "state": "ON" if power_on else "OFF",
+            "current_heating_setpoint": status.get("target_temperature"),
+            "local_temperature": status.get("indoor_temperature"),
+            "system_mode": system_mode,
+            "heating": "ON" if power_on else "OFF",
+        }
+    except Exception as e:
+        logger.debug("Midea %s nicht erreichbar: %s", device.ip, e)
+        return {}
+
+
+async def _miio_status(device) -> dict:
+    """Holt Status des Xiaomi Luftreinigers."""
+    try:
+        status = await MiioClient.get_status(device)
+        if not status:
+            return {}
+        power_on = status.get("power_state", False)
+        return {
+            "state": "ON" if power_on else "OFF",
+            "mode": status.get("mode", "unknown"),
+            "aqi": status.get("aqi"),
+        }
+    except Exception as e:
+        logger.debug("MiIO %s nicht erreichbar: %s", device.ip, e)
+        return {}
+
+
 @router.get("/devices")
 async def get_devices():
     """Liefert alle Geräte mit aktuellem Status."""
@@ -70,13 +113,17 @@ async def get_devices():
     cache = StatusCache.get()
     result = []
 
-    # Shelly + ESPHome Status parallel abfragen
+    # Shelly + ESPHome + Midea + MiIO Status parallel abfragen
     http_tasks = {}
     for d in devices:
         if d.protocol == "shelly" and d.ip:
             http_tasks[d.id] = _shelly_status(d.ip, d.channel, d.type)
         elif d.protocol == "esphome" and d.ip and d.endpoint_status:
             http_tasks[d.id] = _esphome_status(d.ip, d.endpoint_status, d.unit)
+        elif d.protocol == "midea":
+            http_tasks[d.id] = _midea_status(d)
+        elif d.protocol == "miio":
+            http_tasks[d.id] = _miio_status(d)
 
     http_results = {}
     if http_tasks:
@@ -118,6 +165,7 @@ async def get_devices():
             device_info["current_temp"] = state_data.get("local_temperature")
             device_info["system_mode"] = state_data.get("system_mode", "off")
             device_info["heating"] = state_data.get("heating", "OFF")
+            device_info["state"] = state_data.get("state")
             device_info["last_seen"] = state_data.get("last_seen")
         elif d.type in ("switch", "dimmer", "light"):
             raw_state = state_data.get("state", "")
@@ -127,6 +175,10 @@ async def get_devices():
             device_info["state"] = "ON" if raw_state == "ON" else "OFF" if raw_state else None
             if d.type in ("dimmer", "light"):
                 device_info["brightness"] = state_data.get("brightness")
+        elif d.type == "purifier":
+            device_info["state"] = state_data.get("state")
+            device_info["mode"] = state_data.get("mode", "unknown")
+            device_info["aqi"] = state_data.get("aqi")
         elif d.type == "roller":
             device_info["position"] = state_data.get("position")
 
@@ -176,6 +228,18 @@ async def control_device(req: ControlRequest):
             mqtt.publish(f"{settings.Z2M_TOPIC_BASE}/{device.mqtt_name}/set", {"state": req.value})
         elif device.protocol == "mqtt":
             mqtt.publish(device.topic, req.value)
+        elif device.protocol == "midea":
+            try:
+                await MideaClient.set_power(device, req.value == "ON")
+            except Exception as e:
+                logger.error("Midea Power fehlgeschlagen: %s", e)
+                raise HTTPException(status_code=503, detail="Klimaanlage nicht erreichbar")
+        elif device.protocol == "miio":
+            try:
+                await MiioClient.set_power(device, req.value == "ON")
+            except Exception as e:
+                logger.error("MiIO Power fehlgeschlagen: %s", e)
+                raise HTTPException(status_code=503, detail="Luftreiniger nicht erreichbar")
 
     elif req.action == "brightness":
         if device.protocol == "shelly":
@@ -199,10 +263,30 @@ async def control_device(req: ControlRequest):
     elif req.action == "temperature":
         if device.protocol == "z2m":
             mqtt.publish(f"{settings.Z2M_TOPIC_BASE}/{device.mqtt_name}/set", {"current_heating_setpoint": float(req.value)})
+        elif device.protocol == "midea":
+            try:
+                await MideaClient.set_temperature(device, float(req.value))
+            except Exception as e:
+                logger.error("Midea Temperatur fehlgeschlagen: %s", e)
+                raise HTTPException(status_code=503, detail="Klimaanlage nicht erreichbar")
 
     elif req.action == "system_mode":
         if device.protocol == "z2m":
             mqtt.publish(f"{settings.Z2M_TOPIC_BASE}/{device.mqtt_name}/set", {"system_mode": str(req.value)})
+        elif device.protocol == "midea":
+            try:
+                await MideaClient.set_mode(device, str(req.value))
+            except Exception as e:
+                logger.error("Midea Modus fehlgeschlagen: %s", e)
+                raise HTTPException(status_code=503, detail="Klimaanlage nicht erreichbar")
+
+    elif req.action == "purifier_mode":
+        if device.protocol == "miio":
+            try:
+                await MiioClient.set_mode(device, str(req.value))
+            except Exception as e:
+                logger.error("MiIO Modus fehlgeschlagen: %s", e)
+                raise HTTPException(status_code=503, detail="Luftreiniger nicht erreichbar")
 
     else:
         raise HTTPException(status_code=400, detail=f"Unbekannte Aktion: {req.action}")

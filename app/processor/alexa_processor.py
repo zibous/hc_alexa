@@ -29,7 +29,7 @@ class AlexaProcessor:
 
         # 2. Statusabfragen (z.B. Temperatursensor)
         if namespace == "Alexa" and header.get("name") == "ReportState":
-            response = self.state_handler.handle(devices, directive, header)
+            response = await self.state_handler.handle(devices, directive, header)
             # endpointId in Original-Format (mit #) zurückgeben
             response["event"]["endpoint"]["endpointId"] = original_endpoint_id
             return response

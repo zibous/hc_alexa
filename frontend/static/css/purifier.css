@@ -1,0 +1,146 @@
+/* purifier.css – Luftreiniger-Karte */
+
+.purifier-card {
+    text-align: center;
+    padding: 8px 0;
+}
+
+.purifier-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.purifier-state {
+    font-size: .8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.purifier-aqi {
+    margin: 16px 0;
+    padding: 16px;
+    border-radius: 12px;
+    background: var(--surface);
+}
+
+.purifier-aqi-value {
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1;
+    display: block;
+}
+
+.purifier-aqi-unit {
+    font-size: .75rem;
+    color: var(--text-muted);
+    display: block;
+    margin-top: 2px;
+}
+
+.purifier-aqi-label {
+    font-size: .8rem;
+    font-weight: 600;
+    margin-top: 6px;
+    display: block;
+}
+
+/* AQI Farbcodes */
+.purifier-aqi.aqi-good .purifier-aqi-value,
+.purifier-aqi.aqi-good .purifier-aqi-label {
+    color: var(--green);
+}
+
+.purifier-aqi.aqi-moderate .purifier-aqi-value,
+.purifier-aqi.aqi-moderate .purifier-aqi-label {
+    color: #f59e0b;
+}
+
+.purifier-aqi.aqi-unhealthy-sensitive .purifier-aqi-value,
+.purifier-aqi.aqi-unhealthy-sensitive .purifier-aqi-label {
+    color: #f97316;
+}
+
+.purifier-aqi.aqi-unhealthy .purifier-aqi-value,
+.purifier-aqi.aqi-unhealthy .purifier-aqi-label {
+    color: var(--red);
+}
+
+.purifier-aqi.aqi-hazardous .purifier-aqi-value,
+.purifier-aqi.aqi-hazardous .purifier-aqi-label {
+    color: #7c3aed;
+}
+
+.purifier-aqi.aqi-unknown .purifier-aqi-value {
+    color: var(--text-muted);
+}
+
+/* Power Button */
+.purifier-power {
+    margin: 12px 0;
+}
+
+.purifier-power-btn {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all .2s;
+    border: 2px solid var(--border);
+}
+
+.purifier-power-btn:hover {
+    border-color: var(--text-muted);
+}
+
+.purifier-on .purifier-power-btn {
+    background: rgba(16, 185, 129, .15);
+    color: var(--green);
+    border-color: var(--green);
+}
+
+.purifier-power-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* Modus-Buttons */
+.purifier-modes {
+    display: flex;
+    gap: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-top: 12px;
+}
+
+.purifier-mode-btn {
+    flex: 1;
+    padding: 10px 0;
+    font-size: .8rem;
+    font-weight: 600;
+    background: var(--bg);
+    color: var(--text-muted);
+    border: none;
+    cursor: pointer;
+    transition: all .15s;
+}
+
+.purifier-mode-btn:hover {
+    background: var(--surface);
+    color: var(--text);
+}
+
+.purifier-mode-btn.active {
+    background: var(--green);
+    color: #fff;
+}
