@@ -35,6 +35,7 @@ test/
 # -----------------------------------------------
 config/bosch/devices.json
 config/bosch_new/
+scripts/*.pem
 
 # -----------------------------------------------
 # IDE & OS
