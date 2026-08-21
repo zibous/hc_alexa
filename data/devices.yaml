@@ -371,6 +371,33 @@
   alexa: false
   hardware: ESP32 ESPHome
 
+# http://10.1.1.68/sensor/wasseruhr_anzeige
+# {"name_id":"sensor/Wasseruhr Anzeige","id":"sensor-wasseruhr_anzeige","value":188.502,"state":"188.502 m³"}
+- id: sensor.heizung_wasser
+  name: "Wasseruhr Anzeige"
+  type: sensor
+  category: SENSOR
+  protocol: esphome
+  ip: "10.1.1.68"
+  endpoint_status: "sensor/wasseruhr_anzeige"
+  unit: "m³"
+  alexa: false
+  hardware: ESP32 ESPHome
+
+# http://10.1.1.246/sensor/wug_gasz_hler_anzeige
+# {"id":"sensor-wug_gasz_hler_anzeige","value":32446.04,"state":"32446.041 m³"}
+- id: sensor.gas_zaehler
+  name: "Gaszähler Anzeige"
+  type: sensor
+  category: SENSOR
+  protocol: esphome
+  ip: "10.1.1.246"
+  endpoint_status: "sensor/wug_gasz_hler_anzeige"
+  unit: "m³"
+  alexa: false
+  hardware: ESP32 ESPHome
+  
+
 # ──────────────────────────────────────────────
 # Sensoren (MQTT generisch – Tasmota etc.)
 # ──────────────────────────────────────────────

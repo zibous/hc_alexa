@@ -31,7 +31,7 @@ def _extract_value(data: dict, path: str):
 async def _esphome_status(ip: str, endpoint: str, unit: str | None = None) -> dict:
     """Holt Status von ESPHome per HTTP."""
     try:
-        async with httpx.AsyncClient(timeout=3.0) as client:
+        async with httpx.AsyncClient(timeout=8.0) as client:
             resp = await client.get(f"http://{ip}/{endpoint}")
             data = resp.json()
             value = data.get("value", data.get("state"))

@@ -90,6 +90,8 @@ Wichtig für die korrekte Zuordnung:
 | **Zigbee2MQTT** | MQTT Publish/Subscribe | Temperatursensoren, Thermostate, RGB-Lichter |
 | **ESPHome** | HTTP POST mit custom Endpoints | Türöffner, Spezial-Sensoren |
 | **Tasmota** | MQTT (cmnd/stat Topics) | Sonoff Schalter, Multi-Kanal-Relais |
+| **Midea** | LAN via msmart-ng (proprietary) | Comfee Klimaanlage |
+| **MiIO** | LAN via python-miio (MIoT) | Xiaomi Air Purifier |
 
 Alle Geräte werden in einer einzigen `devices.yaml` definiert:
 
@@ -132,7 +134,7 @@ Statt der Alexa-App gibt es ein eigenes Web-Dashboard mit modernen Controls:
 - **Schalter** – Große Power-Buttons mit grünem Glow bei aktiv
 - **Sensoren** – Ring-Gauge für Temperatur, Rollenzähler für m³-Werte
 
-Das Frontend ist modular aufgebaut (10 JS-Module, 8 CSS-Dateien, alle < 80 Zeilen) und wird mit esbuild gebundelt.
+Das Frontend ist modular aufgebaut (13 JS-Module, 11 CSS-Dateien) und wird mit esbuild gebundelt.
 
 ### Dashboard
 {{< gallery >}}
@@ -195,6 +197,8 @@ flowchart LR
     EMQX["EMQX Broker"] -->|"MQTT conbee2mqtt/#"| Cache
     Cache --> Dashboard["Dashboard + Alexa API"]
     Dashboard -->|"HTTP GET /relay/0"| Shelly["Shelly / ESP"]
+    Dashboard -->|"LAN msmart-ng"| Midea["Midea / Comfee"]
+    Dashboard -->|"LAN python-miio"| Miio["Xiaomi Purifier"]
 {{< /mermaid >}}
 
 ---
@@ -209,7 +213,7 @@ make test-*       # Alexa-Requests simulieren
 make jsbuild      # Frontend bundeln
 ```
 
-Der komplette Stack: Python 3.12, FastAPI, paho-mqtt, httpx – verpackt in einem 80MB Docker-Image.
+Der komplette Stack: Python 3.12, FastAPI, paho-mqtt, httpx, msmart-ng, python-miio – verpackt in einem Docker-Image.
 
 ---
 

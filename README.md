@@ -1,3 +1,15 @@
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/zibous/hc_alexa/releases)
+[![License](https://img.shields.io/badge/license-Open%20Source-green.svg)](https://github.com/zibous/hc_alexa)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=fff)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009485.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)](https://hub.docker.com)
+[![MQTT](https://img.shields.io/badge/MQTT-660066?logo=mqtt&logoColor=fff)](https://mqtt.org)
+[![YAML](https://img.shields.io/badge/YAML-CB171E?logo=yaml&logoColor=fff)](#)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=000)](#)
+[![CSS](https://img.shields.io/badge/CSS-639?logo=css&logoColor=fff)](#)
+[![Bash](https://img.shields.io/badge/Bash-4EAA25?logo=gnubash&logoColor=fff)](#)
+[![Support author](https://img.shields.io/badge/buy%20me%20a%20coffee-orange.svg)](https://www.buymeacoff.ee/zibous)
+
 # hc_alexa – Smart Home Alexa Controller
 
 Standalone Smart Home Skill ohne HomeAssistant.  
@@ -74,6 +86,8 @@ Jede Antwort enthält zusätzlich `EndpointHealth.connectivity = OK`.
 | `z2m` | MQTT `{Z2M_TOPIC_BASE}/{topic_id}/set` | Z2M state.json + MQTT Live | Sensoren, Thermostate |
 | `esphome` | HTTP POST `http://{ip}/{endpoint_on}` | HTTP GET `http://{ip}/{endpoint_status}` | Türöffner |
 | `mqtt` | MQTT Publish auf `topic` | MQTT Subscribe auf `topic_id` | Tasmota Schalter/Sensoren |
+| `midea` | LAN via msmart-ng (proprietary) | Geräte-Status abfragen | Midea/Comfee Klimaanlage |
+| `miio` | LAN via python-miio (MIoT) | Geräte-Status abfragen | Xiaomi Air Purifier |
 
 ## Geräte-Konfiguration (devices.yaml)
 
@@ -111,7 +125,9 @@ hc_alexa/
 │   │   └── device_loader.py       Lädt devices.yaml (cached, hot-reload)
 │   ├── infrastructure/
 │   │   ├── mqtt_client.py         Persistenter MQTT Publisher
-│   │   └── status_cache.py        Z2M State + MQTT Live-Updates + ChangeReport Trigger
+│   │   ├── status_cache.py        Z2M State + MQTT Live-Updates + ChangeReport Trigger
+│   │   ├── midea_client.py        Midea Gerätesteuerung (Klimaanlage)
+│   │   └── miio_client.py         Xiaomi Mi Home / miIO Gerätesteuerung
 │   ├── models/
 │   │   └── device.py              DeviceConfig Pydantic Model
 │   ├── processor/
@@ -134,8 +150,8 @@ hc_alexa/
 │   └── z2m_config.yaml            Z2M Config (via sync_z2m.sh)
 ├── frontend/static/
 │   ├── index.html
-│   ├── css/                        Modulares CSS (8 Dateien)
-│   └── js/                         Modulares JS (10 Dateien)
+│   ├── css/                        Modulares CSS (11 Dateien + Bundles)
+│   └── js/                         Modulares JS (13 Dateien + Bundles)
 ├── scripts/
 │   └── sync_z2m.sh               Z2M-Daten per SCP holen
 ├── aws/
@@ -170,16 +186,32 @@ hc_alexa/
 make dev              # Lokaler Dev-Server mit Auto-Reload
 make sync-z2m         # Z2M State-Dateien vom Remote holen
 make up               # Docker starten (mit Z2M-Sync)
-make rebuild          # Docker neu bauen + starten
-make jsbuild          # Frontend JS/CSS bundeln
+make down             # Docker stoppen
+make restart          # Docker restart (mit Z2M-Sync)
+make rebuild          # Docker neu bauen + starten (no-cache)
+make build            # Docker bauen + starten
 make logs             # Docker Logs verfolgen
+make logs-tail        # Letzte 100 Log-Zeilen
+make ps               # Laufende Container anzeigen
+make jsbuild          # Frontend JS/CSS bundeln (esbuild via Docker)
+make jsclean          # Bundle-Dateien entfernen
+make check-syntax     # AST Syntax-Check aller Python-Dateien
+make check-config     # docker-compose.yml Syntax prüfen
+make check-build      # Docker Build Trockenlauf
+make install          # pip install -r requirements.txt
 make test-discovery   # Alexa Discovery simulieren
 make test-power-on    # Schalter einschalten testen
+make test-power-off   # Schalter ausschalten testen
 make test-roller      # Rollladen Position testen
+make test-dimmer      # Dimmer Helligkeit testen
 make test-thermostat  # Thermostat setzen testen
 make test-sensor      # Temperatur abfragen testen
+make test-esphome     # ESPHome Türöffner testen
 make test-dashboard   # Dashboard API testen
 make test-health      # Health-Check
+make git-setup        # Forgejo Remote einrichten
+make git-update       # Git Push zu Forgejo
+make git-release      # Neues Version-Tag erstellen + pushen
 ```
 
 ---
