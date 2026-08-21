@@ -15,6 +15,8 @@
 Standalone Smart Home Skill ohne HomeAssistant.  
 Steuert Geräte direkt per HTTP (Shelly/ESPHome) und MQTT (Zigbee2MQTT/Tasmota).
 
+![Screenshot der Anwendung](./docs/alexadashboard.png)
+
 ## Architektur
 
 ```
