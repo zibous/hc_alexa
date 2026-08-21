@@ -158,7 +158,7 @@ git-release: git-status ## Neues Versions-Tag automatisch berechnen, erstellen u
 ha-discovery: ## HA Alexa Discovery simulieren (Geräteliste)
 	curl -s -X POST http://10.1.1.219:8123/api/alexa/smart_home \
 	-H "Content-Type: application/json" \
-	-H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhNzc1ODMzNjdhODE0ZTE3OGUyNjlkODdiNjViOGZlMyIsImlhdCI6MTcxMjgxNzcyNiwiZXhwIjoyMDI4MTc3NzI2fQ.weD7tsp6SpYGCBhXGtfyFcWO2Cx_F3WhnpE3N1qAE-g" \
+	-H "Authorization: Bearer YOUR_HA_LONG_LIVED_TOKEN" \
 	-d '{"directive":{"header":{"namespace":"Alexa.Discovery","name":"Discover","payloadVersion":"3","messageId":"test"},"payload":{}}}' \
 	| python3 -m json.tool > ha_discovery.json
 

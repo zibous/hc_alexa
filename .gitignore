@@ -36,6 +36,9 @@ test/
 config/bosch/devices.json
 config/bosch_new/
 scripts/*.pem
+scripts/.aiowebostv.json
+scripts/comfee-data.json
+scripts/.env
 
 # -----------------------------------------------
 # IDE & OS
