@@ -381,3 +381,12 @@ DEVICES_YAML_PATH=data/devices.yaml
 - **Proaktive ChangeReports** erfordern ein LWA (Login with Amazon) Refresh Token. Aktuell pollt Alexa per StateReport (ca. alle 60s). Für Echtzeit-Push muss "Send Alexa Events" in der Developer Console aktiviert werden.
 - **Skill-Wechsel** führt zum Verlust aller Raum-Zuordnungen und Routinen in der Alexa App. Geräte bleiben als "Geister" erhalten auch nach Skill-Deaktivierung.
 - **Namenskonflikte** bei Sensoren und Thermostaten im gleichen Raum (z.B. "Temperatur Gästezimmer 1" vs. "Heizung Gästezimmer 1") – Lösung: Eindeutige Namen oder Alexa-Raum-Zuordnung nutzen.
+
+> [!IMPORTANT]
+> **Lizenz & Kommerzielle Nutzung (Commercial Use)**
+> Dieses Projekt ist für die **private, nicht-kommerzielle Nutzung** sowie für Fehlerkorrekturen (Pull Requests) völlig kostenlos. 
+> 
+> 🚫 **Eine kommerzielle Nutzung ist strikt untersagt.** 
+> Wenn Sie diesen Code geschäftlich, in einem Unternehmen oder für ein monetarisiertes Projekt nutzen möchten, benötigen Sie eine separate Lizenz.
+> 
+> 📧 **Kontakt für kommerzielle Lizenzen:** peter.siebler@gmail.com
